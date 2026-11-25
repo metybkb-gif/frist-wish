@@ -1,0 +1,4946 @@
+<!doctype html>
+<html lang="bn" data-theme="deep-rose-gold">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+    <title>Museum of Us — Interactive Keepsake</title>
+    <meta name="description" content="A handcrafted interactive digital museum and personalized keepsake gift." />
+    <meta property="og:title" content="Museum of Us — Interactive Keepsake" />
+    <meta property="og:description" content="A handcrafted interactive digital museum and personalized keepsake gift." />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <!-- Fonts: Editorial Serif + Sans + Bengali Script -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,400;1,600&family=Hind+Siliguri:wght@400;500;600;700&family=Noto+Serif+Bengali:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Firebase Compat SDK (Realtime Database) -->
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
+
+    <style>
+      /* =========================================================
+         MULTI-COLOR BACKGROUND PALETTES (6 CURATED + CUSTOM)
+         ========================================================= */
+      :root,
+      [data-theme="deep-rose-gold"] {
+        --bg: #fff4f7;
+        --bg-gradient:
+          radial-gradient(circle at 12% 14%, rgba(219, 39, 119, 0.16), transparent 44%),
+          radial-gradient(circle at 88% 18%, rgba(253, 224, 71, 0.28), transparent 46%),
+          radial-gradient(circle at 75% 85%, rgba(244, 114, 182, 0.18), transparent 48%),
+          linear-gradient(135deg, #fff4f7 0%, #fef9c3 50%, #fce7f3 100%);
+        --surface: #fdeaf2;
+        --surface-elevated: rgba(255, 255, 255, 0.94);
+        --ink: #2c101b;
+        --ink-muted: #6e3d51;
+        --accent: #be185d;
+        --accent-hover: #9d174d;
+        --accent-soft: rgba(190, 24, 93, 0.12);
+        --accent-contrast: #ffffff;
+        --border: rgba(157, 23, 77, 0.16);
+        --gold: #d97706;
+        --shadow: 0 20px 50px -15px rgba(157, 23, 77, 0.16);
+      }
+
+      [data-theme="blush-honey"] {
+        --bg: #fffaf0;
+        --bg-gradient:
+          radial-gradient(circle at 15% 20%, rgba(251, 207, 232, 0.45), transparent 45%),
+          radial-gradient(circle at 85% 25%, rgba(254, 240, 138, 0.48), transparent 48%),
+          linear-gradient(145deg, #fff1f5 0%, #fefce8 55%, #ffe4e6 100%);
+        --surface: #fff3d6;
+        --surface-elevated: rgba(255, 255, 255, 0.94);
+        --ink: #331621;
+        --ink-muted: #784b59;
+        --accent: #e11d48;
+        --accent-hover: #be123c;
+        --accent-soft: rgba(225, 29, 72, 0.11);
+        --accent-contrast: #ffffff;
+        --border: rgba(217, 119, 6, 0.2);
+        --gold: #eab308;
+        --shadow: 0 20px 50px -15px rgba(180, 83, 9, 0.14);
+      }
+
+      [data-theme="velvet-marigold"] {
+        --bg: #1b0b13;
+        --bg-gradient:
+          radial-gradient(circle at 16% 18%, rgba(219, 39, 119, 0.28), transparent 46%),
+          radial-gradient(circle at 84% 22%, rgba(245, 158, 11, 0.2), transparent 44%),
+          radial-gradient(circle at 72% 85%, rgba(157, 23, 77, 0.34), transparent 50%),
+          linear-gradient(145deg, #1b0b13 0%, #2b101e 50%, #190d14 100%);
+        --surface: #2f1423;
+        --surface-elevated: rgba(45, 19, 33, 0.94);
+        --ink: #fff5f8;
+        --ink-muted: #e5b7c8;
+        --accent: #f472b6;
+        --accent-hover: #ec4899;
+        --accent-soft: rgba(244, 114, 182, 0.18);
+        --accent-contrast: #1b0b13;
+        --border: rgba(253, 224, 71, 0.22);
+        --gold: #fbbf24;
+        --shadow: 0 24px 55px -16px rgba(0, 0, 0, 0.65);
+      }
+
+      [data-theme="petal-champagne"] {
+        --bg: #fdf2f8;
+        --bg-gradient:
+          radial-gradient(circle at 10% 10%, rgba(190, 24, 93, 0.14), transparent 40%),
+          radial-gradient(circle at 90% 12%, rgba(234, 179, 8, 0.22), transparent 42%),
+          radial-gradient(circle at 85% 88%, rgba(254, 249, 195, 0.55), transparent 46%),
+          linear-gradient(120deg, #fce7f3 0%, #fef9c3 50%, #fff1f2 100%);
+        --surface: #fce7f3;
+        --surface-elevated: rgba(255, 255, 255, 0.94);
+        --ink: #2b121c;
+        --ink-muted: #6b3b4c;
+        --accent: #db2777;
+        --accent-hover: #9d174d;
+        --accent-soft: rgba(219, 39, 119, 0.12);
+        --accent-contrast: #ffffff;
+        --border: rgba(219, 39, 119, 0.18);
+        --gold: #ca8a04;
+        --shadow: 0 20px 50px -15px rgba(219, 39, 119, 0.16);
+      }
+
+      [data-theme="sunset-peach-rose"] {
+        --bg: #fff5f0;
+        --bg-gradient:
+          radial-gradient(circle at 18% 15%, rgba(251, 146, 60, 0.22), transparent 45%),
+          radial-gradient(circle at 82% 80%, rgba(244, 63, 94, 0.2), transparent 48%),
+          linear-gradient(135deg, #fff7ed 0%, #ffe4e6 52%, #fef3c7 100%);
+        --surface: #ffedd5;
+        --surface-elevated: rgba(255, 255, 255, 0.94);
+        --ink: #2d1613;
+        --ink-muted: #764a42;
+        --accent: #e11d48;
+        --accent-hover: #be123c;
+        --accent-soft: rgba(225, 29, 72, 0.11);
+        --accent-contrast: #ffffff;
+        --border: rgba(234, 88, 12, 0.18);
+        --gold: #d97706;
+        --shadow: 0 20px 50px -15px rgba(225, 29, 72, 0.15);
+      }
+
+      [data-theme="lavender-blossom"] {
+        --bg: #faf5ff;
+        --bg-gradient:
+          radial-gradient(circle at 14% 18%, rgba(192, 132, 252, 0.22), transparent 45%),
+          radial-gradient(circle at 86% 22%, rgba(244, 114, 182, 0.22), transparent 45%),
+          radial-gradient(circle at 50% 90%, rgba(253, 224, 71, 0.2), transparent 48%),
+          linear-gradient(135deg, #faf5ff 0%, #fdf2f8 55%, #fefce8 100%);
+        --surface: #f3e8ff;
+        --surface-elevated: rgba(255, 255, 255, 0.94);
+        --ink: #261433;
+        --ink-muted: #654778;
+        --accent: #a21caf;
+        --accent-hover: #86198f;
+        --accent-soft: rgba(162, 28, 175, 0.11);
+        --accent-contrast: #ffffff;
+        --border: rgba(162, 28, 175, 0.18);
+        --gold: #ca8a04;
+        --shadow: 0 20px 50px -15px rgba(162, 28, 175, 0.15);
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      html {
+        scroll-behavior: smooth;
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      body {
+        background-color: var(--bg);
+        background-image: var(--bg-gradient);
+        background-attachment: fixed;
+        color: var(--ink);
+        font-family: "Plus Jakarta Sans", "Hind Siliguri", sans-serif;
+        line-height: 1.65;
+        min-height: 100vh;
+        overflow-x: hidden;
+        transition: background-color 0.45s ease, color 0.45s ease;
+        -webkit-font-smoothing: antialiased;
+        caret-color: transparent;
+      }
+
+      input,
+      textarea,
+      select {
+        caret-color: auto;
+        user-select: text;
+        -webkit-user-select: text;
+      }
+
+      img,
+      canvas,
+      button,
+      [role="button"],
+      [tabindex],
+      .stage-screen,
+      .couple-stage,
+      .collage-wall,
+      .intro-invite-card,
+      .flower-curtain-stage,
+      .portal-arch,
+      .museum-door-frame,
+      .flip-card,
+      .envelope-stage,
+      .promise-item {
+        -webkit-tap-highlight-color: transparent;
+        user-select: none;
+        -webkit-user-select: none;
+        outline: none;
+      }
+
+      *:focus:not(:focus-visible) {
+        outline: none !important;
+      }
+
+      .font-serif-display {
+        font-family: "Cormorant Garamond", "Noto Serif Bengali", serif;
+      }
+
+      .font-prose {
+        font-family: "Noto Serif Bengali", "Cormorant Garamond", "Hind Siliguri", serif;
+      }
+
+      .tabular-nums {
+        font-variant-numeric: tabular-nums;
+      }
+
+      .hidden {
+        display: none !important;
+      }
+
+      button:focus-visible,
+      a:focus-visible,
+      input:focus-visible,
+      textarea:focus-visible,
+      select:focus-visible {
+        outline: 2px solid var(--accent);
+        outline-offset: 2px;
+      }
+
+      /* Inline PNG icon helpers (zero missing emoji boxes!) */
+      .icon-img {
+        width: 20px;
+        height: 20px;
+        object-fit: contain;
+        display: inline-block;
+        vertical-align: middle;
+        flex-shrink: 0;
+      }
+
+      .icon-img-md {
+        width: 28px;
+        height: 28px;
+        object-fit: contain;
+        display: inline-block;
+        vertical-align: middle;
+        flex-shrink: 0;
+      }
+
+      .icon-img-lg {
+        width: 56px;
+        height: 56px;
+        object-fit: contain;
+        display: inline-block;
+      }
+
+      #fx-canvas {
+        position: fixed;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 45;
+      }
+
+      /* =========================================================
+         BUTTONS & CONTROLS
+         ========================================================= */
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        padding: 0.72rem 1.45rem;
+        min-height: 44px;
+        border-radius: 0.7rem;
+        font-size: 0.92rem;
+        font-weight: 600;
+        font-family: inherit;
+        cursor: pointer;
+        border: 1px solid transparent;
+        white-space: nowrap;
+        flex-shrink: 0;
+        transition: transform 0.18s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+        text-decoration: none;
+      }
+
+      .btn:active:not(:disabled) {
+        transform: scale(0.97);
+      }
+
+      .btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+
+      .btn-primary {
+        background: linear-gradient(135deg, var(--accent), var(--accent-hover));
+        color: var(--accent-contrast);
+        box-shadow: 0 8px 20px -6px var(--accent);
+      }
+
+      .btn-primary:hover:not(:disabled) {
+        filter: brightness(1.06);
+        transform: translateY(-1px);
+      }
+
+      .btn-secondary {
+        background-color: var(--surface-elevated);
+        color: var(--ink);
+        border-color: var(--border);
+      }
+
+      .btn-secondary:hover:not(:disabled) {
+        border-color: var(--accent);
+      }
+
+      .btn-ghost {
+        background-color: transparent;
+        color: var(--ink-muted);
+      }
+
+      .btn-ghost:hover:not(:disabled) {
+        color: var(--ink);
+        background-color: var(--accent-soft);
+      }
+
+      .btn-sm {
+        min-height: 36px;
+        padding: 0.42rem 0.85rem;
+        font-size: 0.82rem;
+      }
+
+      /* =========================================================
+         CREATOR MODE LAYOUT
+         ========================================================= */
+      #creator-app {
+        position: relative;
+        z-index: 10;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .creator-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        padding: 0.9rem 1.5rem;
+        border-bottom: 1px solid var(--border);
+        background: var(--surface-elevated);
+        backdrop-filter: blur(12px);
+        position: sticky;
+        top: 0;
+        z-index: 30;
+      }
+
+      .brand-wordmark {
+        font-family: "Cormorant Garamond", "Noto Serif Bengali", serif;
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--ink);
+        white-space: nowrap;
+        flex-shrink: 0;
+      }
+
+      .header-actions {
+        display: flex;
+        align-items: center;
+        gap: 0.85rem;
+        flex-shrink: 0;
+      }
+
+      .header-meta {
+        font-size: 0.84rem;
+        color: var(--ink-muted);
+        white-space: nowrap;
+      }
+
+      .lang-switch-btn {
+        background: linear-gradient(135deg, var(--surface), var(--surface-elevated));
+        color: var(--ink);
+        border: 1px solid var(--border);
+        border-radius: 0.6rem;
+        padding: 0.42rem 0.95rem;
+        font-size: 0.83rem;
+        font-weight: 700;
+        cursor: pointer;
+        white-space: nowrap;
+        flex-shrink: 0;
+        transition: border-color 0.18s ease, transform 0.16s ease;
+      }
+
+      .lang-switch-btn:hover {
+        border-color: var(--accent);
+        transform: translateY(-1px);
+      }
+
+      .creator-shell {
+        width: 100%;
+        max-width: 980px;
+        margin: 0 auto;
+        padding: 1.85rem 1.25rem 4rem;
+        flex: 1;
+      }
+
+      .step-rail {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.45rem;
+        margin-bottom: 1.75rem;
+        overflow-x: auto;
+        padding-bottom: 0.45rem;
+      }
+
+      .step-node {
+        display: flex;
+        align-items: center;
+        gap: 0.45rem;
+        background: var(--surface-elevated);
+        border: 1px solid var(--border);
+        cursor: pointer;
+        color: var(--ink-muted);
+        font-family: inherit;
+        font-size: 0.81rem;
+        font-weight: 600;
+        padding: 0.45rem 0.72rem;
+        border-radius: 0.6rem;
+        white-space: nowrap;
+        flex-shrink: 0;
+        transition: all 0.2s ease;
+      }
+
+      .step-node:hover {
+        color: var(--ink);
+        border-color: var(--accent);
+      }
+
+      .step-node.active {
+        color: var(--accent-contrast);
+        background: var(--accent);
+        border-color: var(--accent);
+      }
+
+      .step-node.done {
+        color: var(--ink);
+        border-color: var(--gold);
+      }
+
+      .step-num {
+        width: 1.45rem;
+        height: 1.45rem;
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.74rem;
+        border: 1px solid currentColor;
+        font-variant-numeric: tabular-nums;
+      }
+
+      .step-card {
+        background-color: var(--surface-elevated);
+        backdrop-filter: blur(14px);
+        border: 1px solid var(--border);
+        border-radius: 1.15rem;
+        padding: 2.1rem;
+        box-shadow: var(--shadow);
+        animation: fadeSlideUp 0.38s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+
+      @media (max-width: 640px) {
+        .step-card {
+          padding: 1.35rem;
+        }
+        .header-meta {
+          display: none;
+        }
+      }
+
+      .step-kicker {
+        font-size: 0.78rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--accent);
+        font-weight: 700;
+        margin-bottom: 0.35rem;
+      }
+
+      .step-title {
+        font-family: "Cormorant Garamond", "Noto Serif Bengali", serif;
+        font-size: clamp(1.75rem, 3.2vw, 2.35rem);
+        font-weight: 700;
+        line-height: 1.22;
+        margin-bottom: 0.45rem;
+        text-wrap: balance;
+      }
+
+      .step-desc {
+        color: var(--ink-muted);
+        font-size: 0.94rem;
+        margin-bottom: 1.65rem;
+        max-width: 64ch;
+      }
+
+      .form-grid {
+        display: grid;
+        gap: 1.35rem;
+      }
+
+      .form-row-2 {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 1rem;
+      }
+
+      .form-row-3 {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 0.85rem;
+      }
+
+      @media (max-width: 640px) {
+        .form-row-2,
+        .form-row-3 {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .field-group {
+        display: flex;
+        flex-direction: column;
+        gap: 0.45rem;
+      }
+
+      .field-label {
+        font-size: 0.88rem;
+        font-weight: 600;
+        color: var(--ink);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+      }
+
+      .input,
+      .textarea,
+      .select {
+        width: 100%;
+        background-color: var(--bg);
+        color: var(--ink);
+        border: 1px solid var(--border);
+        border-radius: 0.65rem;
+        padding: 0.75rem 0.95rem;
+        font-size: 0.95rem;
+        font-family: inherit;
+        transition: border-color 0.18s ease, box-shadow 0.18s ease;
+      }
+
+      .input:focus,
+      .textarea:focus,
+      .select:focus {
+        outline: none;
+        border-color: var(--accent);
+        box-shadow: 0 0 0 3px var(--accent-soft);
+      }
+
+      .textarea {
+        resize: vertical;
+        min-height: 100px;
+        line-height: 1.65;
+      }
+
+      .choice-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 0.7rem;
+      }
+
+      @media (max-width: 640px) {
+        .choice-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+      }
+
+      .choice-card {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.25rem;
+        padding: 0.85rem 1rem;
+        background-color: var(--bg);
+        border: 1px solid var(--border);
+        border-radius: 0.75rem;
+        cursor: pointer;
+        text-align: left;
+        font-family: inherit;
+        color: var(--ink);
+        transition: border-color 0.18s ease, background-color 0.18s ease;
+      }
+
+      .choice-card:hover {
+        border-color: var(--accent);
+      }
+
+      .choice-card.selected {
+        background-color: var(--accent-soft);
+        border-color: var(--accent);
+      }
+
+      .choice-title {
+        font-size: 0.9rem;
+        font-weight: 600;
+      }
+
+      .choice-sub {
+        font-size: 0.76rem;
+        color: var(--ink-muted);
+      }
+
+      .theme-swatch-row {
+        display: flex;
+        gap: 0.28rem;
+        margin-bottom: 0.35rem;
+        flex-wrap: wrap;
+      }
+
+      .swatch-dot {
+        width: 14px;
+        height: 14px;
+        border-radius: 50%;
+        border: 1px solid rgba(128, 128, 128, 0.28);
+      }
+
+      .custom-color-bar {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 1rem;
+        padding: 0.85rem 1rem;
+        background-color: var(--bg);
+        border: 1px solid var(--border);
+        border-radius: 0.75rem;
+        margin-top: 0.5rem;
+      }
+
+      .color-picker-item {
+        display: flex;
+        align-items: center;
+        gap: 0.45rem;
+        font-size: 0.82rem;
+        font-weight: 600;
+      }
+
+      .color-picker-item input[type="color"] {
+        width: 34px;
+        height: 30px;
+        border: 1px solid var(--border);
+        border-radius: 0.4rem;
+        cursor: pointer;
+        background: none;
+        padding: 1px;
+      }
+
+      .days-preview-line {
+        font-size: 0.94rem;
+        color: var(--accent);
+        font-weight: 700;
+        padding-top: 0.35rem;
+        display: flex;
+        align-items: center;
+        gap: 0.45rem;
+      }
+
+      /* Photo Upload Zone */
+      .dropzone {
+        border: 1.5px dashed var(--accent);
+        background-color: var(--accent-soft);
+        border-radius: 0.95rem;
+        padding: 1.75rem 1.25rem;
+        text-align: center;
+        cursor: pointer;
+        transition: background-color 0.2s ease;
+      }
+
+      .dropzone:hover,
+      .dropzone.dragover {
+        background-color: var(--surface);
+      }
+
+      .photo-grid-editor {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(205px, 1fr));
+        gap: 1rem;
+        margin-top: 1.25rem;
+      }
+
+      .photo-item-card {
+        background-color: var(--bg);
+        border: 1px solid var(--border);
+        border-radius: 0.75rem;
+        padding: 0.65rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.55rem;
+      }
+
+      .photo-thumb-wrap {
+        position: relative;
+        aspect-ratio: 4 / 3;
+        border-radius: 0.5rem;
+        overflow: hidden;
+        background-color: var(--surface);
+      }
+
+      .photo-thumb-wrap img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+      }
+
+      .photo-remove-btn {
+        position: absolute;
+        top: 0.35rem;
+        right: 0.35rem;
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        background: rgba(20, 15, 18, 0.8);
+        color: #fff;
+        border: none;
+        cursor: pointer;
+        font-size: 0.85rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .puzzle-select-btn {
+        width: 100%;
+        padding: 0.44rem 0.6rem;
+        border-radius: 0.45rem;
+        border: 1px solid var(--border);
+        background: var(--surface-elevated);
+        color: var(--ink);
+        font-size: 0.8rem;
+        font-weight: 600;
+        font-family: inherit;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.4rem;
+        transition: all 0.16s ease;
+      }
+
+      .puzzle-select-btn.active {
+        background-color: var(--accent);
+        color: var(--accent-contrast);
+        border-color: var(--accent);
+      }
+
+      /* Image-Based Wax Seal & Sticker Pickers */
+      .img-picker-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.65rem;
+      }
+
+      .img-pick-btn {
+        width: 60px;
+        height: 60px;
+        border-radius: 0.8rem;
+        border: 1.5px solid var(--border);
+        background-color: var(--bg);
+        padding: 0.45rem;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        transition: transform 0.16s ease, border-color 0.16s ease, background-color 0.16s ease;
+      }
+
+      .img-pick-btn img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        display: block;
+      }
+
+      .img-pick-btn:hover {
+        transform: translateY(-2px);
+      }
+
+      .img-pick-btn.selected {
+        border-color: var(--accent);
+        background-color: var(--accent-soft);
+        box-shadow: 0 0 0 3px var(--accent-soft);
+      }
+
+      .voice-studio {
+        background-color: var(--bg);
+        border: 1px solid var(--border);
+        border-radius: 0.85rem;
+        padding: 1.5rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+        text-align: center;
+      }
+
+      .voice-visualizer {
+        width: 100%;
+        max-width: 420px;
+        height: 64px;
+        border-radius: 0.5rem;
+        background-color: var(--surface);
+      }
+
+      .step-footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        margin-top: 2rem;
+        padding-top: 1.25rem;
+        border-top: 1px solid var(--border);
+      }
+
+      .result-box {
+        background-color: var(--surface);
+        border: 1px solid var(--accent);
+        border-radius: 0.9rem;
+        padding: 1.5rem;
+        margin-top: 1.5rem;
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        animation: fadeSlideUp 0.4s ease;
+      }
+
+      .link-display {
+        background-color: var(--surface-elevated);
+        border: 1px solid var(--border);
+        border-radius: 0.55rem;
+        padding: 0.75rem 0.95rem;
+        font-size: 0.85rem;
+        word-break: break-all;
+        color: var(--ink);
+        user-select: all;
+      }
+
+      .spinner {
+        width: 18px;
+        height: 18px;
+        border: 2.5px solid rgba(255, 255, 255, 0.35);
+        border-top-color: currentColor;
+        border-radius: 50%;
+        animation: spin 0.75s linear infinite;
+        display: inline-block;
+      }
+
+      /* =========================================================
+         RECEIVER MODE & INTERACTIVE FLOWER CURTAIN
+         ========================================================= */
+      #receiver-app {
+        position: relative;
+        z-index: 10;
+        min-height: 100vh;
+        width: 100%;
+      }
+
+      .receiver-topbar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 60;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0.75rem 1.25rem;
+        pointer-events: none;
+      }
+
+      .receiver-topbar > * {
+        pointer-events: auto;
+      }
+
+      .topbar-right-group {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .sound-toggle {
+        background-color: var(--surface-elevated);
+        color: var(--ink);
+        border: 1px solid var(--border);
+        border-radius: 0.6rem;
+        padding: 0.45rem 0.85rem;
+        font-size: 0.82rem;
+        font-weight: 600;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        box-shadow: var(--shadow);
+      }
+
+      .stage-screen {
+        min-height: 100vh;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 4.5rem 1.25rem 3rem;
+        position: relative;
+      }
+
+      /* Flower Curtain Overlay */
+      .flower-curtain-stage {
+        position: fixed;
+        inset: 0;
+        z-index: 55;
+        overflow: hidden;
+        cursor: pointer;
+        user-select: none;
+        touch-action: none;
+      }
+
+      .curtain-half {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 52%;
+        transition: transform 1.25s cubic-bezier(0.22, 1, 0.36, 1), opacity 1.1s ease;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        grid-template-rows: repeat(5, 1fr);
+        place-items: center;
+        padding: 1rem;
+        pointer-events: none;
+      }
+
+      .curtain-left {
+        left: 0;
+        background: linear-gradient(90deg, rgba(157, 23, 77, 0.94), rgba(219, 39, 119, 0.85), rgba(254, 240, 138, 0.55));
+        backdrop-filter: blur(8px);
+        border-right: 2px solid rgba(253, 224, 71, 0.55);
+      }
+
+      .curtain-right {
+        right: 0;
+        background: linear-gradient(-90deg, rgba(157, 23, 77, 0.94), rgba(219, 39, 119, 0.85), rgba(254, 240, 138, 0.55));
+        backdrop-filter: blur(8px);
+        border-left: 2px solid rgba(253, 224, 71, 0.55);
+      }
+
+      .curtain-flower-img {
+        width: clamp(78px, 16vw, 144px);
+        height: clamp(78px, 16vw, 144px);
+        object-fit: contain;
+        filter: drop-shadow(0 10px 18px rgba(0, 0, 0, 0.25));
+        animation: flowerSway 3.6s ease-in-out infinite alternate;
+      }
+
+      .flower-curtain-stage.parted {
+        pointer-events: none;
+      }
+
+      .flower-curtain-stage.parted .curtain-left {
+        transform: translateX(-115%) rotate(-6deg);
+        opacity: 0;
+      }
+
+      .flower-curtain-stage.parted .curtain-right {
+        transform: translateX(115%) rotate(6deg);
+        opacity: 0;
+      }
+
+      .curtain-prompt-pill {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: rgba(255, 250, 245, 0.96);
+        color: #7c133b;
+        border: 2px solid #fbbf24;
+        border-radius: 1rem;
+        padding: 1.25rem 1.75rem;
+        text-align: center;
+        box-shadow: 0 22px 50px rgba(0, 0, 0, 0.35);
+        max-width: 90vw;
+        transition: opacity 0.45s ease, transform 0.45s ease;
+      }
+
+      .flower-curtain-stage.parted .curtain-prompt-pill {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.85);
+      }
+
+      /* Lock Screen */
+      .lock-envelope {
+        width: 100%;
+        max-width: 450px;
+        background-color: var(--surface-elevated);
+        backdrop-filter: blur(14px);
+        border: 1px solid var(--border);
+        border-radius: 1.25rem;
+        padding: 2.3rem 1.85rem;
+        box-shadow: var(--shadow);
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+        transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+
+      .lock-envelope.unlocked {
+        transform: scale(1.04) translateY(-12px);
+      }
+
+      .lock-flower-top {
+        width: 78px;
+        height: 78px;
+        object-fit: contain;
+        margin: 0 auto 0.75rem;
+        display: block;
+        filter: drop-shadow(0 8px 16px rgba(190, 24, 93, 0.25));
+        animation: gentlePulse 2.8s ease-in-out infinite;
+      }
+
+      .lock-hint-bar {
+        margin-top: 0.95rem;
+        padding: 0.6rem 0.9rem;
+        border-radius: 0.65rem;
+        background-color: var(--surface);
+        border: 1px solid var(--border);
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: var(--ink);
+        word-break: break-word;
+      }
+
+      .password-input-wrap {
+        position: relative;
+        display: flex;
+        align-items: center;
+      }
+
+      .password-eye-btn {
+        position: absolute;
+        right: 0.65rem;
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-size: 0.82rem;
+        font-weight: 600;
+        padding: 0.35rem 0.5rem;
+        color: var(--ink-muted);
+      }
+
+      .unlock-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        color: #16a34a;
+        font-weight: 700;
+        font-size: 1.05rem;
+        margin-top: 0.85rem;
+        animation: popIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+
+      /* Intro & Couple */
+      .intro-invite-card {
+        width: 100%;
+        max-width: 520px;
+        background-color: var(--surface-elevated);
+        backdrop-filter: blur(14px);
+        border: 1px solid var(--border);
+        border-radius: 1.25rem;
+        padding: 3rem 2rem;
+        text-align: center;
+        box-shadow: var(--shadow);
+        cursor: pointer;
+        transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s ease;
+      }
+
+      .intro-invite-card:hover {
+        transform: translateY(-4px);
+        border-color: var(--accent);
+      }
+
+      .couple-stage {
+        max-width: 640px;
+        text-align: center;
+        animation: fadeSlideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+
+      .couple-svg-wrap {
+        width: 100%;
+        max-width: 340px;
+        margin: 0 auto 1.35rem;
+      }
+
+      /* Polaroid Collage */
+      .collage-wall {
+        width: 100%;
+        max-width: 1120px;
+        margin: 0 auto;
+        text-align: center;
+        cursor: pointer;
+      }
+
+      .polaroid-grid {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 1.5rem;
+        margin: 2rem 0 2.25rem;
+      }
+
+      .polaroid-card {
+        width: 195px;
+        background: #ffffff;
+        color: #241b1e;
+        padding: 0.65rem 0.65rem 1.2rem;
+        border-radius: 0.4rem;
+        box-shadow: 0 16px 36px rgba(0, 0, 0, 0.16);
+        transform: rotate(var(--rot, -2deg));
+        animation: floatPolaroid 5.5s ease-in-out infinite;
+        animation-delay: var(--delay, 0s);
+        transition: transform 0.25s ease;
+      }
+
+      .polaroid-card:hover {
+        transform: rotate(0deg) scale(1.06);
+        z-index: 5;
+      }
+
+      .polaroid-card img {
+        width: 100%;
+        aspect-ratio: 1 / 1;
+        object-fit: cover;
+        border-radius: 0.22rem;
+        display: block;
+      }
+
+      .polaroid-caption {
+        margin-top: 0.65rem;
+        font-family: "Noto Serif Bengali", "Cormorant Garamond", serif;
+        font-size: 0.92rem;
+        font-weight: 600;
+        color: #2c2024;
+        line-height: 1.35;
+      }
+
+      @media (max-width: 600px) {
+        .polaroid-card {
+          width: 148px;
+          padding: 0.5rem 0.5rem 0.9rem;
+        }
+      }
+
+      /* Bow & Arrow */
+      .bow-stage-wrap {
+        width: 100%;
+        max-width: 780px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1.25rem;
+        text-align: center;
+      }
+
+      #bow-canvas {
+        width: 100%;
+        max-width: 720px;
+        height: auto;
+        aspect-ratio: 720 / 360;
+        background-color: var(--surface-elevated);
+        border: 1px solid var(--border);
+        border-radius: 1.1rem;
+        box-shadow: var(--shadow);
+        touch-action: none;
+        cursor: grab;
+      }
+
+      .first-msg-reveal {
+        background-color: var(--surface-elevated);
+        border: 1px solid var(--accent);
+        border-radius: 1rem;
+        padding: 1.75rem 2rem;
+        max-width: 620px;
+        box-shadow: var(--shadow);
+        animation: popIn 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+
+      /* Heart Tree */
+      #tree-canvas {
+        width: 100%;
+        max-width: 660px;
+        height: auto;
+        aspect-ratio: 660 / 410;
+        border-radius: 1.1rem;
+        background: linear-gradient(180deg, var(--surface-elevated) 0%, var(--surface) 100%);
+        border: 1px solid var(--border);
+        box-shadow: var(--shadow);
+      }
+
+      /* =========================================================
+         MODERN ARCHITECTURAL MUSEUM DOORS
+         ========================================================= */
+      .doors-stage {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: 1.5rem;
+        max-width: 580px;
+        width: 100%;
+      }
+
+      .portal-arch {
+        position: relative;
+        padding: 18px 18px 0;
+        border-radius: 175px 175px 10px 10px;
+        background: linear-gradient(160deg, #f3e2c7, #c9a362, #8c6429);
+        box-shadow: 0 28px 65px -16px rgba(60, 20, 35, 0.45), inset 0 2px 10px rgba(255, 255, 255, 0.65);
+        cursor: pointer;
+        user-select: none;
+      }
+
+      .museum-door-frame {
+        position: relative;
+        width: 300px;
+        height: 375px;
+        perspective: 1400px;
+        border-radius: 155px 155px 4px 4px;
+        overflow: visible;
+        background: #1a0910;
+      }
+
+      .door-glow {
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(circle at center, #fffbe0 0%, #fbbf24 45%, rgba(245, 158, 11, 0.1) 80%);
+        opacity: 0;
+        transition: opacity 0.9s ease;
+        border-radius: 155px 155px 4px 4px;
+        box-shadow: 0 0 80px rgba(253, 224, 71, 0.75);
+      }
+
+      .museum-door-frame.opening .door-glow {
+        opacity: 1;
+      }
+
+      .door-leaf {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 50%;
+        background:
+          linear-gradient(180deg, rgba(255, 255, 255, 0.08) 0%, transparent 45%),
+          linear-gradient(145deg, #5d1735 0%, #3b0d21 60%, #270715 100%);
+        border: 2px solid #e7c275;
+        transition: transform 1.25s cubic-bezier(0.22, 1, 0.36, 1);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding: 16px;
+        box-shadow: inset 0 0 24px rgba(0, 0, 0, 0.45);
+      }
+
+      .door-left {
+        left: 0;
+        border-top-left-radius: 155px;
+        transform-origin: left center;
+        align-items: flex-end;
+      }
+
+      .door-right {
+        right: 0;
+        border-top-right-radius: 155px;
+        transform-origin: right center;
+        align-items: flex-start;
+      }
+
+      .door-inlay {
+        width: 78%;
+        height: 62%;
+        border: 1.5px solid rgba(231, 194, 117, 0.48);
+        border-radius: 70px 70px 6px 6px;
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .door-knob {
+        position: absolute;
+        top: 50%;
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        background: radial-gradient(circle at 35% 35%, #fff8d6, #d97706);
+        border: 1px solid #fff;
+        box-shadow: 0 3px 8px rgba(0, 0, 0, 0.5);
+        transform: translateY(-50%);
+      }
+
+      .door-left .door-knob {
+        right: -24px;
+      }
+      .door-right .door-knob {
+        left: -24px;
+      }
+
+      .door-center-crest {
+        position: absolute;
+        top: 44%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 58px;
+        height: 58px;
+        border-radius: 50%;
+        background: rgba(255, 250, 240, 0.94);
+        border: 2px solid #e7c275;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 4;
+        box-shadow: 0 8px 22px rgba(0, 0, 0, 0.45);
+        transition: opacity 0.4s ease, transform 0.4s ease;
+      }
+
+      .door-center-crest img {
+        width: 34px;
+        height: 34px;
+        object-fit: contain;
+      }
+
+      .museum-door-frame.opening .door-center-crest {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(1.4);
+      }
+
+      .knock-ripple {
+        position: absolute;
+        top: 44%;
+        left: 50%;
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        border: 2px solid #fde047;
+        transform: translate(-50%, -50%) scale(1);
+        pointer-events: none;
+        z-index: 6;
+        animation: knockRipple 0.65s ease-out forwards;
+      }
+
+      .museum-door-frame.knocked {
+        animation: doorShake 0.28s ease;
+      }
+
+      .museum-door-frame.opening .door-left {
+        transform: rotateY(-112deg);
+      }
+
+      .museum-door-frame.opening .door-right {
+        transform: rotateY(112deg);
+      }
+
+      /* Museum Rooms */
+      .museum-shell {
+        width: 100%;
+        max-width: 1060px;
+        margin: 0 auto;
+        padding: 4.5rem 1.25rem 4rem;
+      }
+
+      .museum-nav {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        border-bottom: 1px solid var(--border);
+        padding-bottom: 1rem;
+        margin-bottom: 2rem;
+        flex-wrap: wrap;
+      }
+
+      .room-tabs {
+        display: flex;
+        gap: 0.45rem;
+        overflow-x: auto;
+      }
+
+      .room-tab {
+        background: var(--surface-elevated);
+        border: 1px solid var(--border);
+        color: var(--ink-muted);
+        border-radius: 0.55rem;
+        padding: 0.45rem 0.85rem;
+        font-size: 0.82rem;
+        font-weight: 600;
+        font-family: inherit;
+        cursor: pointer;
+        white-space: nowrap;
+        flex-shrink: 0;
+        transition: all 0.18s ease;
+      }
+
+      .room-tab.active {
+        background-color: var(--accent);
+        color: var(--accent-contrast);
+        border-color: var(--accent);
+      }
+
+      .scratch-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+        gap: 1.35rem;
+      }
+
+      .scratch-frame {
+        background-color: var(--surface-elevated);
+        border: 1px solid var(--border);
+        border-radius: 0.85rem;
+        padding: 0.75rem;
+        box-shadow: var(--shadow);
+      }
+
+      .scratch-canvas-box {
+        position: relative;
+        width: 100%;
+        aspect-ratio: 4 / 3;
+        border-radius: 0.5rem;
+        overflow: hidden;
+        background-color: var(--surface);
+      }
+
+      .scratch-canvas-box img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+      }
+
+      .scratch-overlay {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        touch-action: none;
+        cursor: crosshair;
+        transition: opacity 0.45s ease;
+      }
+
+      .scratch-caption {
+        margin-top: 0.65rem;
+        font-size: 0.9rem;
+        font-family: "Noto Serif Bengali", "Cormorant Garamond", serif;
+        text-align: center;
+        color: var(--ink);
+      }
+
+      .puzzle-board {
+        width: min(360px, 90vw);
+        height: min(360px, 90vw);
+        margin: 1.5rem auto;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        grid-template-rows: repeat(3, 1fr);
+        gap: 4px;
+        background-color: var(--surface);
+        padding: 6px;
+        border-radius: 0.85rem;
+        border: 1px solid var(--border);
+        box-shadow: var(--shadow);
+      }
+
+      .puzzle-tile {
+        width: 100%;
+        height: 100%;
+        border-radius: 0.4rem;
+        background-size: 300% 300%;
+        cursor: pointer;
+        border: 2px solid transparent;
+        transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s ease;
+      }
+
+      .puzzle-tile.selected {
+        border-color: var(--accent);
+        transform: scale(0.94);
+        box-shadow: 0 0 0 3px var(--accent-soft);
+      }
+
+      .puzzle-fullscreen-overlay {
+        position: fixed;
+        inset: 0;
+        z-index: 90;
+        background: rgba(18, 8, 14, 0.94);
+        backdrop-filter: blur(10px);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 1.15rem;
+        padding: 1.5rem;
+        text-align: center;
+        animation: fadeSlideUp 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+
+      .puzzle-fullscreen-img {
+        max-width: 94vw;
+        max-height: 74vh;
+        width: auto;
+        height: auto;
+        object-fit: contain;
+        border-radius: 0.95rem;
+        box-shadow: 0 24px 70px rgba(0, 0, 0, 0.65);
+        border: 2px solid rgba(253, 224, 71, 0.45);
+      }
+
+      .notes-wall-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1.25rem;
+      }
+
+      .flip-card {
+        height: 220px;
+        perspective: 1000px;
+        cursor: pointer;
+      }
+
+      .flip-card-inner {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+        transform-style: preserve-3d;
+      }
+
+      .flip-card.flipped .flip-card-inner {
+        transform: rotateY(180deg);
+      }
+
+      .flip-face {
+        position: absolute;
+        inset: 0;
+        backface-visibility: hidden;
+        border-radius: 0.9rem;
+        border: 1px solid var(--border);
+        padding: 1.5rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        box-shadow: var(--shadow);
+      }
+
+      .flip-front {
+        background: linear-gradient(155deg, var(--surface-elevated), var(--surface));
+      }
+
+      .flip-back {
+        background-color: var(--surface-elevated);
+        transform: rotateY(180deg);
+        font-family: "Noto Serif Bengali", "Cormorant Garamond", serif;
+        font-size: 1rem;
+        line-height: 1.65;
+      }
+
+      /* =========================================================
+         ROOM 4: 3D INTERACTIVE ENVELOPE + WAX SEAL + LETTER REVEAL
+         ========================================================= */
+      .reading-room-wrap {
+        max-width: 720px;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+      }
+
+      .envelope-stage {
+        position: relative;
+        width: 100%;
+        max-width: 460px;
+        height: 300px;
+        margin: 1.5rem auto 0.5rem;
+        perspective: 1200px;
+        cursor: pointer;
+        user-select: none;
+      }
+
+      .env-back {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(165deg, #f3e4d7, #e6cfb8);
+        border-radius: 0.9rem;
+        border: 1px solid rgba(157, 23, 77, 0.22);
+        box-shadow: var(--shadow);
+      }
+
+      .env-inner-sheet {
+        position: absolute;
+        left: 6%;
+        right: 6%;
+        top: 14%;
+        bottom: 10%;
+        background: #efe0d1;
+        border-radius: 0.65rem;
+        padding: 1.25rem;
+        border: 1px solid rgba(110, 71, 48, 0.25);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+        transition: transform 0.85s cubic-bezier(0.22, 1, 0.36, 1) 0.25s, opacity 0.6s ease;
+        z-index: 2;
+        overflow: hidden;
+      }
+
+      .env-front-pocket {
+        position: absolute;
+        inset: 0;
+        z-index: 3;
+        pointer-events: none;
+        border-radius: 0.9rem;
+        overflow: hidden;
+      }
+
+      .env-front-pocket::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(155deg, #fff9f2, #f5e5d5);
+        clip-path: polygon(0 0, 50% 52%, 100% 0, 100% 100%, 0 100%);
+        border-radius: 0.9rem;
+      }
+
+      .env-front-pocket::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(180deg, rgba(190, 24, 93, 0.06), rgba(157, 23, 77, 0.12));
+        clip-path: polygon(0 100%, 50% 48%, 100% 100%);
+      }
+
+      .env-top-flap {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 58%;
+        background: linear-gradient(180deg, #fffcf7, #f1decb);
+        clip-path: polygon(0 0, 100% 0, 50% 100%);
+        transform-origin: top center;
+        transition: transform 0.75s cubic-bezier(0.22, 1, 0.36, 1);
+        z-index: 4;
+        border-top-left-radius: 0.9rem;
+        border-top-right-radius: 0.9rem;
+        box-shadow: 0 8px 18px rgba(0, 0, 0, 0.12);
+      }
+
+      .env-wax-seal {
+        position: absolute;
+        top: 52%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 5;
+        width: 86px;
+        height: 86px;
+        border-radius: 50%;
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        padding: 0;
+        transition: transform 0.35s ease, opacity 0.35s ease;
+        filter: drop-shadow(0 10px 18px rgba(136, 19, 55, 0.42));
+      }
+
+      .env-wax-seal:hover {
+        transform: translate(-50%, -50%) scale(1.1);
+      }
+
+      .env-wax-seal img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        display: block;
+      }
+
+      .env-tap-hint {
+        position: absolute;
+        bottom: 1rem;
+        left: 0;
+        right: 0;
+        text-align: center;
+        z-index: 5;
+        font-size: 0.86rem;
+        font-weight: 700;
+        color: #6e2d45;
+        pointer-events: none;
+      }
+
+      /* Envelope Opening State */
+      .envelope-stage.opened .env-wax-seal {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(1.45) rotate(16deg);
+        pointer-events: none;
+      }
+
+      .envelope-stage.opened .env-top-flap {
+        transform: rotateX(-178deg);
+        z-index: 1;
+      }
+
+      .envelope-stage.opened .env-inner-sheet {
+        transform: translateY(-135px);
+      }
+
+      .envelope-stage.opened .env-tap-hint {
+        opacity: 0;
+      }
+
+      .letter-paper {
+        background: linear-gradient(180deg, #5d3b28 0%, #482b1c 100%);
+        color: #fdf3e7;
+        border: 1px solid #8f6043;
+        border-radius: 1rem;
+        padding: 2.75rem 2.25rem 2.35rem;
+        box-shadow: 0 22px 52px -14px rgba(42, 22, 12, 0.55);
+        position: relative;
+        animation: letterUnfold 0.68s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+
+      .letter-sticker-img {
+        position: absolute;
+        top: 1.15rem;
+        right: 1.35rem;
+        width: 64px;
+        height: 64px;
+        object-fit: contain;
+        transform: rotate(7deg);
+        filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.28));
+      }
+
+      .letter-body {
+        font-family: "Noto Serif Bengali", "Cormorant Garamond", serif;
+        font-size: 1.15rem;
+        line-height: 2.25rem;
+        white-space: pre-wrap;
+        color: #fdf3e7;
+        max-width: 62ch;
+        padding-right: 2.5rem;
+        padding-bottom: 0.25rem;
+        background-image: repeating-linear-gradient(
+          to bottom,
+          transparent 0px,
+          transparent calc(2.25rem - 1px),
+          rgba(248, 224, 198, 0.38) calc(2.25rem - 1px),
+          rgba(248, 224, 198, 0.38) 2.25rem
+        );
+        background-attachment: local;
+        background-position: 0 0;
+      }
+
+      .voice-player-card {
+        background-color: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 0.9rem;
+        padding: 1.25rem 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        flex-wrap: wrap;
+      }
+
+      .waveform-bars {
+        display: flex;
+        align-items: center;
+        gap: 3px;
+        height: 34px;
+        flex: 1;
+        min-width: 140px;
+      }
+
+      .wave-bar {
+        flex: 1;
+        background-color: var(--accent);
+        border-radius: 2px;
+        height: 25%;
+        opacity: 0.45;
+      }
+
+      .waveform-bars.playing .wave-bar {
+        opacity: 1;
+        animation: waveBounce 0.8s ease-in-out infinite alternate;
+      }
+
+      .promises-parchment {
+        max-width: 680px;
+        margin: 0 auto;
+        background-color: var(--surface-elevated);
+        border: 1px solid var(--border);
+        border-radius: 1rem;
+        padding: 2.25rem 2rem 3.5rem;
+        box-shadow: var(--shadow);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .promise-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.9rem;
+        padding: 1rem 0.75rem;
+        border-bottom: 1px solid var(--border);
+        cursor: pointer;
+        border-radius: 0.5rem;
+        transition: background-color 0.16s ease;
+      }
+
+      .promise-item:hover {
+        background-color: var(--surface);
+      }
+
+      .promise-check {
+        width: 30px;
+        height: 30px;
+        border-radius: 0.45rem;
+        border: 1.5px solid var(--accent);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        margin-top: 0.12rem;
+        transition: background-color 0.2s ease, transform 0.2s ease;
+      }
+
+      .promise-item.checked .promise-check {
+        background-color: var(--accent);
+        color: var(--accent-contrast);
+        transform: scale(1.06);
+      }
+
+      .sealed-stamp {
+        position: absolute;
+        bottom: 1.5rem;
+        right: 1.75rem;
+        border: 4px solid #c81e32;
+        color: #c81e32;
+        font-weight: 800;
+        font-size: 1.65rem;
+        letter-spacing: 0.16em;
+        padding: 0.35rem 1.15rem;
+        border-radius: 0.4rem;
+        transform: rotate(-12deg) scale(2.2);
+        opacity: 0;
+        pointer-events: none;
+      }
+
+      .sealed-stamp.stamped {
+        animation: stampSlam 0.45s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+      }
+
+      .finale-card {
+        max-width: 680px;
+        width: 100%;
+        text-align: center;
+        padding: 3rem 1.5rem;
+        animation: fadeSlideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+
+      .finale-counter {
+        font-family: "Cormorant Garamond", serif;
+        font-size: clamp(3rem, 8vw, 5.2rem);
+        font-weight: 700;
+        line-height: 1.05;
+        color: var(--accent);
+        margin: 0.5rem 0;
+      }
+
+      @keyframes fadeSlideUp {
+        from { opacity: 0; transform: translateY(18px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      @keyframes letterUnfold {
+        from { opacity: 0; transform: translateY(28px) scale(0.95); }
+        to { opacity: 1; transform: translateY(0) scale(1); }
+      }
+      @keyframes popIn {
+        0% { opacity: 0; transform: scale(0.86); }
+        100% { opacity: 1; transform: scale(1); }
+      }
+      @keyframes spin {
+        to { transform: rotate(360deg); }
+      }
+      @keyframes gentlePulse {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.06); }
+      }
+      @keyframes flowerSway {
+        0% { transform: translateY(-4px) rotate(-6deg) scale(0.96); }
+        100% { transform: translateY(6px) rotate(6deg) scale(1.04); }
+      }
+      @keyframes floatPolaroid {
+        0%, 100% { transform: rotate(var(--rot, -2deg)) translateY(0px); }
+        50% { transform: rotate(calc(var(--rot, -2deg) * -0.5)) translateY(-10px); }
+      }
+      @keyframes doorShake {
+        0%, 100% { transform: translateX(0); }
+        25% { transform: translateX(-6px) rotate(-0.8deg); }
+        75% { transform: translateX(6px) rotate(0.8deg); }
+      }
+      @keyframes knockRipple {
+        from { opacity: 0.95; transform: translate(-50%, -50%) scale(1); }
+        to { opacity: 0; transform: translate(-50%, -50%) scale(3.1); }
+      }
+      @keyframes stampSlam {
+        0% { opacity: 0; transform: rotate(-12deg) scale(2.5); }
+        70% { opacity: 1; transform: rotate(-12deg) scale(0.92); }
+        100% { opacity: 0.92; transform: rotate(-12deg) scale(1); }
+      }
+      @keyframes waveBounce {
+        0% { height: 20%; }
+        100% { height: 92%; }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        *, *::before, *::after {
+          animation-duration: 0.01ms !important;
+          transition-duration: 0.01ms !important;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <canvas id="fx-canvas" aria-hidden="true"></canvas>
+    <audio id="bgm-audio" loop preload="auto">
+      <source src="./m/bgm.mp3" type="audio/mpeg" />
+      <source src="./m/bgm.wav" type="audio/wav" />
+    </audio>
+
+    <!-- =======================================================
+         CREATOR MODE
+         ======================================================= -->
+    <div id="creator-app" class="hidden">
+      <header class="creator-header">
+        <div class="brand-wordmark" id="creator-brand-title">Museum of Us</div>
+        <div class="header-actions">
+          <span class="header-meta" id="header-progress-text">Step 1 of 7</span>
+          <button type="button" id="creator-lang-btn" class="lang-switch-btn" aria-label="Switch language">
+            E / B
+          </button>
+        </div>
+      </header>
+
+      <main class="creator-shell">
+        <nav class="step-rail" id="step-rail" aria-label="Gift customization steps"></nav>
+        <section id="step-container" class="step-card"></section>
+      </main>
+    </div>
+
+    <!-- =======================================================
+         RECEIVER MODE
+         ======================================================= -->
+    <div id="receiver-app" class="hidden">
+      <div class="receiver-topbar">
+        <span id="receiver-brand-label" class="font-serif-display" style="font-size: 1.15rem; font-weight: 700; color: var(--ink);"></span>
+        <div class="topbar-right-group">
+          <button type="button" id="receiver-lang-btn" class="lang-switch-btn" aria-label="Switch language">E / B</button>
+          <button id="sound-toggle-btn" class="sound-toggle hidden" type="button" aria-label="Toggle background music">
+            <img src="./img/music.png" alt="" class="icon-img" />
+            <span id="sound-text">Music On</span>
+          </button>
+        </div>
+      </div>
+      <main id="receiver-stage-root"></main>
+    </div>
+
+    <script>
+      (function () {
+        "use strict";
+
+        // =========================================================
+        // 1. FIREBASE REALTIME DATABASE CONFIGURATION
+        // =========================================================
+        const firebaseConfig = {
+          apiKey: "AIzaSyAZXDmiP-kRZqJ6UvuaAqpb6PFFfg5RkzM",
+          authDomain: "love-3363d.firebaseapp.com",
+          databaseURL: "https://love-3363d-default-rtdb.firebaseio.com",
+          projectId: "love-3363d",
+          storageBucket: "love-3363d.firebasestorage.app",
+          messagingSenderId: "479866098109",
+          appId: "1:479866098109:web:fb457aa3627c34df5602d4",
+          measurementId: "G-8R8Y7HP5D9"
+        };
+
+        // =========================================================
+        // 2. SUPABASE STORAGE CONFIGURATION (img/i & voi/v)
+        // =========================================================
+        const SUPABASE_URL = "https://hwrxlkepkmzrqtqkltux.supabase.co";
+        const SUPABASE_ANON_KEY = "sb_publishable_kjwwMn1HbFnECyIuxhdGsw_RksqUTOq";
+        const SUPABASE_IMG_BUCKET = "img";
+        const SUPABASE_IMG_FOLDER = "i";
+        const SUPABASE_VOI_BUCKET = "voi";
+        const SUPABASE_VOI_FOLDER = "v";
+
+        const SEVEN_DAYS_MS = 7 * 24 * 60 * 60 * 1000;
+
+        let firebaseDb = null;
+        if (typeof firebase !== "undefined") {
+          try {
+            if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+            firebaseDb = firebase.database();
+          } catch (err) {
+            console.error("Firebase init error:", err);
+          }
+        }
+
+        function getCleanBaseUrl() {
+          return window.location.href.split("?")[0].split("#")[0];
+        }
+
+        function toArr(val) {
+          if (Array.isArray(val)) return val.filter((item) => item !== null && item !== undefined);
+          if (val && typeof val === "object") return Object.values(val).filter((item) => item !== null && item !== undefined);
+          return [];
+        }
+
+        function isImgReady(im) {
+          return !!(im && im.complete && im.naturalWidth > 0);
+        }
+
+        async function withTimeout(promise, ms = 6500) {
+          let timerId;
+          const timeoutPromise = new Promise((_, reject) => {
+            timerId = setTimeout(() => reject(new Error("Request timeout")), ms);
+          });
+          try {
+            return await Promise.race([promise, timeoutPromise]);
+          } finally {
+            clearTimeout(timerId);
+          }
+        }
+
+        async function saveGiftRecord(giftId, payload) {
+          const restUrl = `${firebaseConfig.databaseURL}/gifts/${encodeURIComponent(giftId)}.json`;
+          if (firebaseDb) {
+            try {
+              await withTimeout(firebaseDb.ref(`gifts/${giftId}`).set(payload), 7000);
+              return;
+            } catch (err) {
+              console.warn("Firebase SDK save fallback to REST:", err.message || err);
+            }
+          }
+          const res = await withTimeout(
+            fetch(restUrl, {
+              method: "PUT",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(payload)
+            }),
+            10000
+          );
+          if (!res.ok) {
+            throw new Error(`Firebase save failed (${res.status})`);
+          }
+        }
+
+        async function loadGiftRecord(giftId) {
+          const restUrl = `${firebaseConfig.databaseURL}/gifts/${encodeURIComponent(giftId)}.json`;
+          if (firebaseDb) {
+            try {
+              const snap = await withTimeout(firebaseDb.ref(`gifts/${giftId}`).once("value"), 5500);
+              if (snap && snap.exists()) return snap.val();
+            } catch (err) {
+              console.warn("Firebase SDK read fallback to REST:", err.message || err);
+            }
+          }
+          const res = await withTimeout(fetch(restUrl), 8000);
+          if (!res.ok) return null;
+          const data = await res.json();
+          return data || null;
+        }
+
+        // =========================================================
+        // SUPABASE UPLOAD, DELETE & 7-DAY AUTO-EXPIRY CLEANUP
+        // =========================================================
+        async function uploadToSupabaseBucket(bucket, objectPath, blob) {
+          const base = SUPABASE_URL.replace(/\/$/, "");
+          const uploadUrl = `${base}/storage/v1/object/${bucket}/${objectPath}`;
+          const res = await fetch(uploadUrl, {
+            method: "POST",
+            headers: {
+              Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+              apikey: SUPABASE_ANON_KEY,
+              "Content-Type": blob.type || "application/octet-stream",
+              "x-upsert": "true"
+            },
+            body: blob
+          });
+          if (!res.ok) {
+            const errTxt = await res.text();
+            throw new Error(`Supabase (${bucket}) upload failed: ${res.status} ${errTxt}`);
+          }
+          return `${base}/storage/v1/object/public/${bucket}/${objectPath}`;
+        }
+
+        async function deleteFromSupabaseBucket(bucket, paths) {
+          if (!paths || !paths.length) return;
+          const base = SUPABASE_URL.replace(/\/$/, "");
+          try {
+            await fetch(`${base}/storage/v1/object/${bucket}`, {
+              method: "DELETE",
+              headers: {
+                Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+                apikey: SUPABASE_ANON_KEY,
+                "Content-Type": "application/json"
+              },
+              body: JSON.stringify({ prefixes: paths })
+            });
+          } catch (err) {
+            console.warn("Supabase delete warning:", err);
+          }
+        }
+
+        async function deleteGiftAndMedia(giftId, giftRecord) {
+          if (giftRecord && giftRecord.storagePaths) {
+            const imgPaths = giftRecord.storagePaths.imgPaths || [];
+            const voiPath = giftRecord.storagePaths.voiPath || "";
+            if (imgPaths.length) await deleteFromSupabaseBucket(SUPABASE_IMG_BUCKET, imgPaths);
+            if (voiPath) await deleteFromSupabaseBucket(SUPABASE_VOI_BUCKET, [voiPath]);
+          }
+          if (firebaseDb) {
+            try {
+              await firebaseDb.ref(`gifts/${giftId}`).remove();
+            } catch (err) {
+              console.warn("Firebase delete warning:", err);
+            }
+          }
+        }
+
+        async function runSevenDayAutoCleanup() {
+          const now = Date.now();
+          if (firebaseDb) {
+            try {
+              const expiredSnap = await firebaseDb
+                .ref("gifts")
+                .orderByChild("expiresAt")
+                .endAt(now)
+                .once("value");
+              if (expiredSnap.exists()) {
+                const tasks = [];
+                expiredSnap.forEach((child) => {
+                  tasks.push(deleteGiftAndMedia(child.key, child.val()));
+                });
+                await Promise.allSettled(tasks);
+              }
+            } catch (err) {
+              console.warn("Firebase expiry sweep skipped:", err.message || err);
+            }
+          }
+
+          const cutoff = now - SEVEN_DAYS_MS;
+          const base = SUPABASE_URL.replace(/\/$/, "");
+          for (const [bucket, folder] of [
+            [SUPABASE_IMG_BUCKET, SUPABASE_IMG_FOLDER],
+            [SUPABASE_VOI_BUCKET, SUPABASE_VOI_FOLDER]
+          ]) {
+            try {
+              const listRes = await fetch(`${base}/storage/v1/object/list/${bucket}`, {
+                method: "POST",
+                headers: {
+                  Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+                  apikey: SUPABASE_ANON_KEY,
+                  "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ prefix: `${folder}/`, limit: 200 })
+              });
+              if (listRes.ok) {
+                const items = await listRes.json();
+                if (Array.isArray(items)) {
+                  const stalePaths = items
+                    .filter((item) => item.created_at && new Date(item.created_at).getTime() <= cutoff)
+                    .map((item) => `${folder}/${item.name}`);
+                  if (stalePaths.length) {
+                    await deleteFromSupabaseBucket(bucket, stalePaths);
+                  }
+                }
+              }
+            } catch (_) {}
+          }
+        }
+
+        // =========================================================
+        // TRANSLATIONS (ENGLISH <-> বাংলা) — ZERO EMOJIS
+        // =========================================================
+        let currentLang = "en";
+
+        const I18N = {
+          en: {
+            brand: "Museum of Us",
+            stepOf: (s) => `Step ${s} of 7`,
+            steps: ["Names & Intro", "Theme & Date", "Photos & Puzzle", "Notes & Letter", "Voice Note", "Promises", "Lock & Link"],
+            back: "Back",
+            next: "Continue",
+            s1Kicker: "Step 01 · Names & First Message",
+            s1Title: "Personalize names and the opening message",
+            s1Desc: "All fields start blank so you can write freely in Bengali or English.",
+            herNameLabel: "Her / Recipient Name",
+            herNamePh: "Enter recipient name...",
+            yourNameLabel: "Your / Sender Name",
+            yourNamePh: "Enter your name...",
+            introLabel: "First message she reads (after heart blast)",
+            introPh: "Write your opening message here...",
+            s2Kicker: "Step 02 · Occasion, Colours & Full Date",
+            s2Title: "Choose occasion, colour combination & exact date",
+            s2Desc: "Pick a multi-color background theme or blend your own 3-color gradient, and select the exact Day, Month, and Year.",
+            occasionLabel: "What is this gift for?",
+            relLabel: "Relationship Tag",
+            themeLabel: "Background Colour Combinations",
+            customBgLabel: "Custom Multi-Color Gradient",
+            color1: "Color 1",
+            color2: "Color 2",
+            color3: "Color 3",
+            dateLabel: "Exact Date (Day / Month / Year)",
+            dayLabel: "Day (Date)",
+            monthLabel: "Month",
+            yearLabel: "Year",
+            daysOfUs: (d, formattedDate) => `${d} days of us · Since ${formattedDate}`,
+            s3Kicker: "Step 03 · Photo Gallery (Supabase img/i)",
+            s3Title: "Upload up to 8 photographs",
+            s3Desc: "Images are stored publicly in Supabase 'img/i' and automatically deleted after 7 days.",
+            dropText: (n) => `Tap or drag JPG / PNG photos here (${n}/8)`,
+            dropSub: "Stored in Supabase img/i · Auto-expires in 7 days",
+            emptyPhotos: "No photos added yet. Upload your photos above.",
+            captionPh: "Write a caption for this photo...",
+            usePuzzle: "Use as Puzzle",
+            selectedPuzzle: "Selected for Puzzle",
+            s4Kicker: "Step 04 · 5 Notes & Love Letter",
+            s4Title: "Write 5 secret notes & your letter",
+            s4Desc: "Write your notes and heartfelt letter, then select your Wax Seal and Letter Sticker image.",
+            notesLabel: "5 Secret Notes (Room 3 Flip Cards)",
+            notePh: (i) => `Write note #${i}...`,
+            letterLabel: "Your Love Letter (Room 4 Envelope)",
+            letterPh: "Write your heartfelt letter here...",
+            waxLabel: "Wax Seal Image (4 Choices)",
+            stickerLabel: "Letter Sticker Image",
+            s5Kicker: "Step 05 · Voice Message (Supabase voi/v)",
+            s5Title: "Record a voice note (up to 45 seconds)",
+            s5Desc: "Audio is saved publicly in Supabase 'voi/v' and automatically deleted after 7 days.",
+            startRec: "Start Recording",
+            reRec: "Re-record",
+            stopRec: "Stop",
+            delRec: "Remove",
+            uploadAudio: "Or choose an audio file:",
+            s6Kicker: "Step 06 · Promises",
+            s6Title: "Write up to 5 promises",
+            s6Desc: "She will check off each promise in Room 5 to stamp them SEALED.",
+            promiseLabel: "Promises List",
+            promisePh: (i) => `Write promise #${i}...`,
+            s7Kicker: "Step 07 · Text/Number Lock & Shareable Link",
+            s7Title: "Set a password & generate your link",
+            s7Desc: "Use any text, name, or numbers as the password. Everything auto-deletes 7 days after upload.",
+            passLabel: "Password (Text or Numbers)",
+            passPh: "Enter text or numbers...",
+            hintLabel: "Hint Bar (shown inside \"...\" on lock screen)",
+            hintPh: "Write your hint here...",
+            generateBtn: "Complete & Generate Link",
+            creatingBtn: "Uploading & Generating...",
+            readyTitle: "Your shareable link is ready (Valid for 7 days)",
+            copyLink: "Copy Link",
+            copied: "Copied",
+            openGift: "Open Gift Experience",
+            needPassErr: "Please enter a password (text or numbers) first.",
+            forPrefix: "For",
+            unlockPrompt: "Enter the secret text or number key to open.",
+            passInputPh: "Enter password (text or numbers)...",
+            openGiftBtn: "Open the gift",
+            needHint: "Hint",
+            wrongPass: "Incorrect key — please try again.",
+            curtainTouch: "Touch or swipe to part the flower curtain",
+            knockText: (k) => k < 3 ? `Knock three times to enter (${k} / 3)` : "Welcome inside"
+          },
+          bn: {
+            brand: "আমাদের জাদুঘর",
+            stepOf: (s) => `ধাপ ${s} / ৭`,
+            steps: ["নাম ও বার্তা", "থিম ও তারিখ", "ছবি ও পাজল", "নোট ও চিঠি", "ভয়েস নোট", "প্রতিশ্রুতি", "লক ও লিংক"],
+            back: "পেছনে",
+            next: "পরবর্তী ধাপ",
+            s1Kicker: "ধাপ ০১ · নাম ও শুরুর বার্তা",
+            s1Title: "নাম এবং প্রথম বার্তাটি লিখুন",
+            s1Desc: "সবগুলো ঘর খালি রাখা হয়েছে যাতে আপনি সম্পূর্ণ নিজের মতো বাংলা বা ইংরেজিতে লিখতে পারেন।",
+            herNameLabel: "প্রাপকের নাম (Her Name)",
+            herNamePh: "এখানে প্রাপকের নাম লিখুন...",
+            yourNameLabel: "প্রেরকের নাম (Your Name)",
+            yourNamePh: "এখানে আপনার নাম লিখুন...",
+            introLabel: "প্রথম বার্তা (হার্ট ব্লাস্টের পর দেখাবে)",
+            introPh: "এখানে প্রথম ভালোবাসার বার্তা লিখুন...",
+            s2Kicker: "ধাপ ০২ · উপলক্ষ, কালার ও পূর্ণাঙ্গ তারিখ",
+            s2Title: "উপলক্ষ, ব্যাকগ্রাউন্ড কালার ও তারিখ বেছে নিন",
+            s2Desc: "একাধিক কালার কম্বিনেশন থেকে বেছে নিন অথবা নিজের মতো ৩টি রঙের গ্রেডিয়েন্ট তৈরি করুন এবং দিন, মাস ও বছর সিলেক্ট করুন।",
+            occasionLabel: "উপলক্ষ কী?",
+            relLabel: "সম্পর্কের ধরন",
+            themeLabel: "মাল্টি-কালার ব্যাকগ্রাউন্ড কম্বিনেশন",
+            customBgLabel: "কাস্টম ৩-কালার গ্রেডিয়েন্ট তৈরি করুন",
+            color1: "রঙ ১",
+            color2: "রঙ ২",
+            color3: "রঙ ৩",
+            dateLabel: "সম্পূর্ণ তারিখ (দিন / মাস / বছর)",
+            dayLabel: "দিন (Date)",
+            monthLabel: "মাস (Month)",
+            yearLabel: "বছর (Year)",
+            daysOfUs: (d, formattedDate) => `একসাথে ${d} দিন · শুরু: ${formattedDate}`,
+            s3Kicker: "ধাপ ০৩ · ছবি আপলোড (Supabase img/i)",
+            s3Title: "সর্বোচ্চ ৮টি ছবি আপলোড করুন",
+            s3Desc: "ছবিগুলো Supabase-এর 'img' বাকেটের 'i' ফোল্ডারে জমা হবে এবং ঠিক ৭ দিন পর অটো-ডিলিট হবে।",
+            dropText: (n) => `এখানে ক্লিক বা ড্র্যাগ করে ছবি দিন (${n}/৮)`,
+            dropSub: "img/i ফোল্ডারে সেভ হবে · ৭ দিন পর স্বয়ংক্রিয়ভাবে মুছে যাবে",
+            emptyPhotos: "এখনো কোনো ছবি যোগ করা হয়নি। ওপরের বক্স থেকে ছবি সিলেক্ট করুন।",
+            captionPh: "ছবির নিচে লেখার জন্য ক্যাপশন লিখুন...",
+            usePuzzle: "পাজল হিসেবে নিন",
+            selectedPuzzle: "পাজলের জন্য নির্বাচিত",
+            s4Kicker: "ধাপ ০৪ · ৫টি নোট ও ভালোবাসার চিঠি",
+            s4Title: "গোপন নোট ও চিঠি লিখুন",
+            s4Desc: "৫টি নোট ও আপনার চিঠি লিখুন এবং খামের ওয়াক্স সিল ও স্টিকার ইমেজ বেছে নিন।",
+            notesLabel: "৫টি গোপন নোট (রুম ৩ ফ্লিপ কার্ড)",
+            notePh: (i) => `নোট #${i} লিখুন...`,
+            letterLabel: "আপনার ভালোবাসার চিঠি (রুম ৪ খাম)",
+            letterPh: "এখানে আপনার চিঠি লিখুন...",
+            waxLabel: "ওয়াক্স সিল ইমেজ (৪টি অপশন)",
+            stickerLabel: "চিঠির স্টিকার ইমেজ",
+            s5Kicker: "ধাপ ০৫ · ভয়েস মেসেজ (Supabase voi/v)",
+            s5Title: "ভয়েস নোট রেকর্ড করুন (সর্বোচ্চ ৪৫ সেকেন্ড)",
+            s5Desc: "অডিও ফাইল Supabase-এর 'voi' বাকেটের 'v' ফোল্ডারে সেভ হবে এবং ৭ দিন পর অটো-ডিলিট হবে।",
+            startRec: "রেকর্ড শুরু করুন",
+            reRec: "আবার রেকর্ড করুন",
+            stopRec: "থামুন",
+            delRec: "মুছুন",
+            uploadAudio: "অথবা অডিও ফাইল আপলোড করুন:",
+            s6Kicker: "ধাপ ০৬ · প্রতিশ্রুতির তালিকা",
+            s6Title: "সর্বোচ্চ ৫টি প্রতিশ্রুতি লিখুন",
+            s6Desc: "রুম ৫-এ প্রতিটি প্রতিশ্রুতিতে টিক চিহ্ন দিলে SEALED স্ট্যাম্প পড়বে।",
+            promiseLabel: "প্রতিশ্রুতির তালিকা",
+            promisePh: (i) => `প্রতিশ্রুতি #${i} লিখুন...`,
+            s7Kicker: "ধাপ ০৭ · টেক্সট/নাম্বার পাসওয়ার্ড ও লিংক",
+            s7Title: "পাসওয়ার্ড সেট করুন ও লিংক তৈরি করুন",
+            s7Desc: "যেকোনো টেক্সট, নাম বা নাম্বার পাসওয়ার্ড হিসেবে দিতে পারবেন। আপলোডের ৭ দিন পর সব ডেটা অটো-ডিলিট হবে।",
+            passLabel: "পাসওয়ার্ড (টেক্সট অথবা নাম্বার)",
+            passPh: "টেক্সট বা নাম্বার লিখুন...",
+            hintLabel: "হিন্ট বার (লক স্ক্রিনে \"...\"-এর ভেতর দেখাবে)",
+            hintPh: "এখানে সহজ কোনো হিন্ট লিখুন...",
+            generateBtn: "সম্পন্ন করুন ও লিংক তৈরি করুন",
+            creatingBtn: "আপলোড ও লিংক তৈরি হচ্ছে...",
+            readyTitle: "আপনার শেয়ারযোগ্য লিংক তৈরি হয়েছে (৭ দিন পর্যন্ত বৈধ)",
+            copyLink: "লিংক কপি করুন",
+            copied: "কপি হয়েছে",
+            openGift: "গিফট ওপেন করে দেখুন",
+            needPassErr: "অনুগ্রহ করে প্রথমে টেক্সট বা নাম্বার পাসওয়ার্ড লিখুন।",
+            forPrefix: "প্রিয়",
+            unlockPrompt: "গিফট খুলতে গোপন টেক্সট বা নাম্বার পাসওয়ার্ড লিখুন।",
+            passInputPh: "পাসওয়ার্ড লিখুন (টেক্সট বা নাম্বার)...",
+            openGiftBtn: "গিফট খুলুন",
+            needHint: "হিন্ট",
+            wrongPass: "পাসওয়ার্ডটি মেলেনি — আবার চেষ্টা করুন।",
+            curtainTouch: "স্ক্রিনে টাচ বা সোয়াইপ করুন — ফুলের পর্দা দুই পাশে সরে যাবে",
+            knockText: (k) => k < 3 ? `ভেতরে যেতে দরজায় ৩ বার ট্যাপ করুন (${k} / ৩)` : "ভেতরে স্বাগতম"
+          }
+        };
+
+        function t(key, ...args) {
+          const val = I18N[currentLang][key];
+          return typeof val === "function" ? val(...args) : val;
+        }
+
+        // PNG Assets for Wax Seals & Stickers (zero missing emojis)
+        const WAX_SEAL_IMAGES = [
+          { id: "seal_heart.png", src: "./img/seal_heart.png", label: "Heart Wax Seal" },
+          { id: "seal_rose.png", src: "./img/seal_rose.png", label: "Rose Wax Seal" },
+          { id: "seal_crown.png", src: "./img/seal_crown.png", label: "Star Wax Seal" },
+          { id: "seal_infinity.png", src: "./img/seal_infinity.png", label: "Diamond Wax Seal" }
+        ];
+
+        const STICKER_IMAGES = [
+          { id: "sticker_teddy.png", src: "./img/sticker_teddy.png", label: "Teddy Sticker" },
+          { id: "sticker_panda.png", src: "./img/sticker_panda.png", label: "Panda Sticker" },
+          { id: "sticker_butterfly.png", src: "./img/sticker_butterfly.png", label: "Butterfly Sticker" },
+          { id: "sticker_gift.png", src: "./img/sticker_gift.png", label: "Gift Sticker" },
+          { id: "sticker_crown.png", src: "./img/sticker_crown.png", label: "Crown Sticker" }
+        ];
+
+        function resolveSealSrc(val) {
+          if (val && val.endsWith(".png")) return `./img/${val}`;
+          return "./img/seal_heart.png";
+        }
+
+        function resolveStickerSrc(val) {
+          if (val && val.endsWith(".png")) return `./img/${val}`;
+          return "./img/sticker_teddy.png";
+        }
+
+        const OCCASION_OPTIONS = [
+          { en: "Just because", bn: "এমনিই ভালোবাসি তাই" },
+          { en: "I love you", bn: "তোমাকে ভালোবাসি" },
+          { en: "Our anniversary", bn: "আমাদের বিশেষ দিন" },
+          { en: "Her birthday", bn: "জন্মদিনের উপহার" },
+          { en: "Valentine's", bn: "ভালোবাসা দিবস" },
+          { en: "Special surprise", bn: "স্পেশাল সারপ্রাইজ" }
+        ];
+
+        const RELATIONSHIP_OPTIONS = [
+          { en: "My girlfriend", bn: "আমার ভালোবাসা" },
+          { en: "Love of my life", bn: "জীবনের শ্রেষ্ঠ মানুষ" },
+          { en: "Long distance", bn: "দূরে থেকেও কাছে" },
+          { en: "Best friend too", bn: "সেরা বন্ধু ও সঙ্গী" },
+          { en: "My fiancée", bn: "আমার বাগদত্তা" },
+          { en: "My partner", bn: "জীবনসঙ্গী" }
+        ];
+
+        const THEME_OPTIONS = [
+          {
+            id: "deep-rose-gold",
+            en: "Deep Rose & Sunlit Gold",
+            bn: "গাঢ় গোলাপি ও সোনালি হলুদ",
+            subEn: "Rose tones + sunlit gold",
+            subBn: "গোলাপি ও সোনালি সমন্বয়",
+            swatches: ["#9d174d", "#db2777", "#f472b6", "#fde047", "#fef9c3"]
+          },
+          {
+            id: "blush-honey",
+            en: "Soft Blush & Honey",
+            bn: "হালকা গোলাপি ও মধু হলুদ",
+            subEn: "Pastel pink & buttercream",
+            subBn: "কোমল গোলাপি ও মিষ্টি হলুদ",
+            swatches: ["#e11d48", "#fb7185", "#fbcfe8", "#facc15", "#fefce8"]
+          },
+          {
+            id: "velvet-marigold",
+            en: "Velvet Rose & Marigold",
+            bn: "রাতের মখমল গোলাপি ও হলুদ",
+            subEn: "Deep velvet + bright gold",
+            subBn: "ডার্ক ভেলভেট ও উজ্জ্বল হলুদ",
+            swatches: ["#1b0b13", "#831843", "#f472b6", "#f59e0b", "#fef08a"]
+          },
+          {
+            id: "petal-champagne",
+            en: "Four-Tone Rose & Champagne",
+            bn: "চার-টোন গোলাপ ও শ্যাম্পেন",
+            subEn: "Blended pink & gold wash",
+            subBn: "গোলাপি ও হলুদের রঙিন মিশ্রণ",
+            swatches: ["#be185d", "#ec4899", "#f9a8d4", "#eab308", "#fef9c3"]
+          },
+          {
+            id: "sunset-peach-rose",
+            en: "Sunset Peach & Crimson",
+            bn: "সন্ধ্যা-কমলা ও গোলাপি",
+            subEn: "Warm peach, amber & rose",
+            subBn: "উষ্ণ কমলা ও লালচে গোলাপি",
+            swatches: ["#ffedd5", "#fb923c", "#f43f5e", "#e11d48", "#fef3c7"]
+          },
+          {
+            id: "lavender-blossom",
+            en: "Lavender & Rose Gold",
+            bn: "ল্যাভেন্ডার ও রোজ-গোল্ড",
+            subEn: "Soft orchid, pink & yellow",
+            subBn: "হালকা বেগুনি, গোলাপি ও হলুদ",
+            swatches: ["#f3e8ff", "#c084fc", "#f472b6", "#a21caf", "#fefce8"]
+          }
+        ];
+
+        const MONTHS_EN = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+        const MONTHS_BN = ["জানুয়ারি", "ফেব্রুয়ারি", "মার্চ", "এপ্রিল", "মে", "জুন", "জুলাই", "আগস্ট", "সেপ্টেম্বর", "অক্টোবর", "নভেম্বর", "ডিসেম্বর"];
+
+        function getDaysInMonth(monthIdx, year) {
+          return new Date(Number(year), Number(monthIdx) + 1, 0).getDate();
+        }
+
+        function calculateDaysTogether(day, monthIndex, year) {
+          const start = new Date(Number(year), Number(monthIndex), Number(day || 1));
+          const now = new Date();
+          const diff = Math.floor((now.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
+          return Math.max(1, diff);
+        }
+
+        function applyThemeAndColors(themeId, customBgColors) {
+          document.documentElement.setAttribute("data-theme", themeId || "deep-rose-gold");
+          if (themeId === "custom" && Array.isArray(customBgColors) && customBgColors.length === 3) {
+            const [c1, c2, c3] = customBgColors;
+            document.documentElement.style.setProperty(
+              "--bg-gradient",
+              `radial-gradient(circle at 18% 18%, ${c1}55, transparent 48%), radial-gradient(circle at 82% 82%, ${c3}55, transparent 48%), linear-gradient(135deg, ${c1} 0%, ${c2} 50%, ${c3} 100%)`
+            );
+            document.documentElement.style.setProperty("--bg", c1);
+          } else {
+            document.documentElement.style.removeProperty("--bg-gradient");
+            document.documentElement.style.removeProperty("--bg");
+          }
+        }
+
+        function escapeHtml(str) {
+          return String(str ?? "")
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#39;");
+        }
+
+        function generateGiftId() {
+          const chars = "abcdefghjkmnpqrstuvwxyz23456789";
+          let id = "";
+          for (let i = 0; i < 8; i++) id += chars[Math.floor(Math.random() * chars.length)];
+          return id;
+        }
+
+        function compressImageFile(file, maxDim = 1280, quality = 0.85) {
+          return new Promise((resolve, reject) => {
+            const img = new Image();
+            const objUrl = URL.createObjectURL(file);
+            img.onload = () => {
+              let { width, height } = img;
+              if (width > maxDim || height > maxDim) {
+                if (width > height) {
+                  height = Math.round((height * maxDim) / width);
+                  width = maxDim;
+                } else {
+                  width = Math.round((width * maxDim) / height);
+                  height = maxDim;
+                }
+              }
+              const canvas = document.createElement("canvas");
+              canvas.width = width;
+              canvas.height = height;
+              const ctx = canvas.getContext("2d");
+              ctx.drawImage(img, 0, 0, width, height);
+              canvas.toBlob(
+                (blob) => {
+                  URL.revokeObjectURL(objUrl);
+                  if (!blob) return reject(new Error("Compression failed"));
+                  resolve({ blob, previewUrl: URL.createObjectURL(blob) });
+                },
+                "image/jpeg",
+                quality
+              );
+            };
+            img.onerror = () => {
+              URL.revokeObjectURL(objUrl);
+              reject(new Error("Image load failed"));
+            };
+            img.src = objUrl;
+          });
+        }
+
+        // =========================================================
+        // IMAGE PRELOADER & PNG-ONLY FX ENGINE (ZERO EMOJIS!)
+        // =========================================================
+        const FLOWER_FILES = [
+          "./img/petal.png",
+          "./img/rose.png",
+          "./img/blossom.png",
+          "./img/lotus.png",
+          "./img/marigold.png",
+          "./img/hibiscus.png"
+        ];
+        const BURST_FILES = [
+          "./img/love.png",
+          "./img/heart_pink.png",
+          "./img/heart_gold.png",
+          "./img/sparkle.png",
+          "./img/petal.png",
+          "./img/rose.png",
+          "./img/blossom.png"
+        ];
+
+        const loadedFlowerImages = [];
+        const loadedBurstImages = [];
+        const imageCache = {};
+
+        function preloadImg(src, list) {
+          const im = new Image();
+          im.src = src;
+          imageCache[src] = im;
+          im.onload = () => {
+            if (list) list.push(im);
+          };
+          return im;
+        }
+
+        const petalImg = preloadImg("./img/petal.png");
+        FLOWER_FILES.forEach((s) => preloadImg(s, loadedFlowerImages));
+        BURST_FILES.forEach((s) => preloadImg(s, loadedBurstImages));
+
+        const fxCanvas = document.getElementById("fx-canvas");
+        const fxCtx = fxCanvas.getContext("2d");
+        let fxParticles = [];
+        let fxMode = "idle";
+        let fxAnimId = null;
+
+        function resizeFxCanvas() {
+          fxCanvas.width = window.innerWidth;
+          fxCanvas.height = window.innerHeight;
+        }
+        window.addEventListener("resize", resizeFxCanvas);
+        resizeFxCanvas();
+
+        function startLargeFlowerRain() {
+          fxMode = "flowers";
+          if (!fxAnimId) runFxLoop();
+        }
+
+        function stopLargeFlowerRain() {
+          fxMode = "idle";
+        }
+
+        function triggerConfettiBurst(count = 110) {
+          const colors = ["#db2777", "#f59e0b", "#f472b6", "#fde047", "#9d174d", "#10b981"];
+          for (let i = 0; i < count; i++) {
+            const angle = Math.random() * Math.PI * 2;
+            const speed = 4 + Math.random() * 10;
+            fxParticles.push({
+              type: "confetti",
+              x: fxCanvas.width / 2,
+              y: fxCanvas.height * 0.45,
+              vx: Math.cos(angle) * speed,
+              vy: Math.sin(angle) * speed - 4,
+              size: 7 + Math.random() * 7,
+              color: colors[i % colors.length],
+              rot: Math.random() * Math.PI,
+              vRot: (Math.random() - 0.5) * 0.24,
+              life: 165
+            });
+          }
+          if (!fxAnimId) runFxLoop();
+        }
+
+        // Pure PNG image burst (love.png, heart_pink.png, heart_gold.png, sparkle.png)
+        function triggerImageBurst(x, y, count = 48) {
+          for (let i = 0; i < count; i++) {
+            const img = loadedBurstImages.length
+              ? loadedBurstImages[i % loadedBurstImages.length]
+              : imageCache["./img/love.png"];
+            const angle = Math.random() * Math.PI * 2;
+            const speed = 2.5 + Math.random() * 8.5;
+            fxParticles.push({
+              type: "png",
+              img,
+              x,
+              y,
+              vx: Math.cos(angle) * speed,
+              vy: Math.sin(angle) * speed - 2.2,
+              size: 26 + Math.random() * 28,
+              rot: (Math.random() - 0.5) * 0.6,
+              vRot: (Math.random() - 0.5) * 0.08,
+              life: 105
+            });
+          }
+          if (!fxAnimId) runFxLoop();
+        }
+
+        function scatterCurtainFlowers() {
+          for (let i = 0; i < 28; i++) {
+            const img = loadedFlowerImages.length
+              ? loadedFlowerImages[i % loadedFlowerImages.length]
+              : imageCache["./img/rose.png"];
+            const side = i % 2 === 0 ? -1 : 1;
+            fxParticles.push({
+              type: "flower",
+              img,
+              x: fxCanvas.width / 2 + side * (Math.random() * 120),
+              y: Math.random() * fxCanvas.height,
+              vx: side * (3.5 + Math.random() * 6),
+              vy: 0.8 + Math.random() * 2.2,
+              swayPhase: Math.random() * Math.PI * 2,
+              size: 62 + Math.random() * 44,
+              rot: Math.random() * Math.PI * 2,
+              vRot: (Math.random() - 0.5) * 0.06,
+              life: 240
+            });
+          }
+          if (!fxAnimId) runFxLoop();
+        }
+
+        function runFxLoop() {
+          fxCtx.clearRect(0, 0, fxCanvas.width, fxCanvas.height);
+
+          if (fxMode === "flowers") {
+            const activeFlowers = fxParticles.filter((p) => p.type === "flower").length;
+            const spawnCount = activeFlowers < 35 ? 3 : activeFlowers < 78 ? 2 : 0;
+            for (let s = 0; s < spawnCount; s++) {
+              const isPetal = Math.random() < 0.78;
+              const img = isPetal
+                ? petalImg
+                : loadedFlowerImages.length
+                  ? loadedFlowerImages[Math.floor(Math.random() * loadedFlowerImages.length)]
+                  : petalImg;
+              fxParticles.push({
+                type: "flower",
+                img,
+                x: Math.random() * fxCanvas.width,
+                y: -30 - Math.random() * 80,
+                vx: (Math.random() - 0.5) * 1.4,
+                vy: isPetal ? 1.7 + Math.random() * 2.2 : 1.4 + Math.random() * 1.6,
+                swayPhase: Math.random() * Math.PI * 2,
+                size: isPetal ? 28 + Math.random() * 44 : 52 + Math.random() * 38,
+                rot: Math.random() * Math.PI * 2,
+                vRot: (Math.random() - 0.5) * 0.045,
+                life: 820
+              });
+            }
+          }
+
+          for (let i = fxParticles.length - 1; i >= 0; i--) {
+            const p = fxParticles[i];
+            p.life--;
+
+            if (p.type === "flower") {
+              p.swayPhase += 0.025;
+              p.x += p.vx + Math.sin(p.swayPhase) * 0.9;
+              p.y += p.vy;
+              p.rot += p.vRot;
+
+              if (isImgReady(p.img)) {
+                fxCtx.save();
+                fxCtx.translate(p.x, p.y);
+                fxCtx.rotate(p.rot);
+                fxCtx.globalAlpha = Math.min(0.95, p.life / 45);
+                fxCtx.drawImage(p.img, -p.size / 2, -p.size / 2, p.size, p.size);
+                fxCtx.restore();
+              } else {
+                fxCtx.save();
+                fxCtx.translate(p.x, p.y);
+                fxCtx.rotate(p.rot);
+                fxCtx.globalAlpha = Math.min(0.85, p.life / 45);
+                fxCtx.fillStyle = "#e11d48";
+                fxCtx.beginPath();
+                fxCtx.ellipse(0, 0, p.size * 0.32, p.size * 0.18, 0, 0, Math.PI * 2);
+                fxCtx.fill();
+                fxCtx.restore();
+              }
+              if (p.y > fxCanvas.height + 115 || p.life <= 0) fxParticles.splice(i, 1);
+            } else if (p.type === "confetti") {
+              p.vy += 0.22;
+              p.vx *= 0.99;
+              p.x += p.vx;
+              p.y += p.vy;
+              p.rot += p.vRot;
+
+              fxCtx.save();
+              fxCtx.translate(p.x, p.y);
+              fxCtx.rotate(p.rot);
+              fxCtx.globalAlpha = Math.min(1, p.life / 45);
+              fxCtx.fillStyle = p.color;
+              fxCtx.fillRect(-p.size / 2, -p.size / 3, p.size, p.size * 0.65);
+              fxCtx.restore();
+
+              if (p.life <= 0 || p.y > fxCanvas.height + 50) fxParticles.splice(i, 1);
+            } else if (p.type === "png") {
+              p.vy += 0.14;
+              p.x += p.vx;
+              p.y += p.vy;
+              p.rot += p.vRot;
+
+              if (isImgReady(p.img)) {
+                fxCtx.save();
+                fxCtx.translate(p.x, p.y);
+                fxCtx.rotate(p.rot);
+                fxCtx.globalAlpha = Math.min(1, p.life / 35);
+                fxCtx.drawImage(p.img, -p.size / 2, -p.size / 2, p.size, p.size);
+                fxCtx.restore();
+              }
+              if (p.life <= 0) fxParticles.splice(i, 1);
+            }
+          }
+
+          if (fxMode === "flowers" || fxParticles.length > 0) {
+            fxAnimId = requestAnimationFrame(runFxLoop);
+          } else {
+            fxAnimId = null;
+            fxCtx.clearRect(0, 0, fxCanvas.width, fxCanvas.height);
+          }
+        }
+
+        // =========================================================
+        // AUDIO ENGINE: ./m/bgm.mp3 + WEB AUDIO SFX
+        // =========================================================
+        const bgmAudio = document.getElementById("bgm-audio");
+        const SoundEngine = {
+          ctx: null,
+          isPlaying: false,
+
+          ensureCtx() {
+            if (!this.ctx) {
+              const AudioCtx = window.AudioContext || window.webkitAudioContext;
+              if (AudioCtx) this.ctx = new AudioCtx();
+            }
+            if (this.ctx && this.ctx.state === "suspended") {
+              this.ctx.resume().catch(() => {});
+            }
+          },
+
+          startMusic() {
+            this.isPlaying = true;
+            this.updateToggleUI();
+            if (bgmAudio) {
+              bgmAudio.volume = 0.5;
+              bgmAudio.play().catch(() => {});
+            }
+          },
+
+          stopMusic() {
+            this.isPlaying = false;
+            this.updateToggleUI();
+            if (bgmAudio) bgmAudio.pause();
+          },
+
+          toggle() {
+            if (this.isPlaying) this.stopMusic();
+            else this.startMusic();
+          },
+
+          playKnock() {
+            this.ensureCtx();
+            if (!this.ctx) return;
+            const now = this.ctx.currentTime;
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+            osc.type = "triangle";
+            osc.frequency.setValueAtTime(145, now);
+            osc.frequency.exponentialRampToValueAtTime(52, now + 0.11);
+            gain.gain.setValueAtTime(0.28, now);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.14);
+            osc.connect(gain);
+            gain.connect(this.ctx.destination);
+            osc.start(now);
+            osc.stop(now + 0.15);
+          },
+
+          playChime() {
+            this.ensureCtx();
+            if (!this.ctx) return;
+            [523.25, 659.25, 783.99, 1046.5].forEach((freq, idx) => {
+              const now = this.ctx.currentTime + idx * 0.09;
+              const osc = this.ctx.createOscillator();
+              const gain = this.ctx.createGain();
+              osc.type = "sine";
+              osc.frequency.setValueAtTime(freq, now);
+              gain.gain.setValueAtTime(0.001, now);
+              gain.gain.exponentialRampToValueAtTime(0.09, now + 0.04);
+              gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.9);
+              osc.connect(gain);
+              gain.connect(this.ctx.destination);
+              osc.start(now);
+              osc.stop(now + 0.95);
+            });
+          },
+
+          updateToggleUI() {
+            const txt = document.getElementById("sound-text");
+            if (!txt) return;
+            txt.textContent = this.isPlaying ? "Music On" : "Muted";
+          }
+        };
+
+        document.getElementById("sound-toggle-btn").addEventListener("click", () => SoundEngine.toggle());
+
+        // 7-day automatic deletion sweep on load
+        runSevenDayAutoCleanup();
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const activeGiftId = urlParams.get("id");
+
+        if (activeGiftId && activeGiftId.trim() !== "") {
+          initReceiverMode(activeGiftId.trim());
+        } else {
+          initCreatorMode();
+        }
+
+        // =========================================================
+        // CREATOR MODE (ZERO DEFAULTS, NO EXTRA EMOJIS, FULL DATE + COLORS)
+        // =========================================================
+        function initCreatorMode() {
+          const creatorApp = document.getElementById("creator-app");
+          creatorApp.classList.remove("hidden");
+
+          const state = {
+            currentStep: 1,
+            herName: "",
+            yourName: "",
+            introMessage: "",
+            occasion: "I love you",
+            relationshipTag: "Love of my life",
+            theme: "deep-rose-gold",
+            customBgColors: ["#fce7f3", "#fef9c3", "#fbcfe8"],
+            startDay: 1,
+            startMonth: 9,
+            startYear: 2026,
+            photos: [],
+            puzzleIndex: 0,
+            notes: ["", "", "", "", ""],
+            loveLetter: "",
+            waxSeal: "seal_heart.png",
+            sticker: "sticker_teddy.png",
+            voiceBlob: null,
+            voiceUrl: null,
+            voiceDuration: 0,
+            promises: ["", "", "", "", ""],
+            password: "",
+            passwordHint: "",
+            generatedLink: ""
+          };
+
+          let mediaRecorder = null;
+          let recChunks = [];
+          let recTimer = null;
+          let recSeconds = 0;
+          let recAudioCtx = null;
+          let recAnimId = null;
+
+          applyThemeAndColors(state.theme, state.customBgColors);
+
+          function updateLangButtonLabel() {
+            const btn = document.getElementById("creator-lang-btn");
+            btn.textContent = "E / B";
+            document.getElementById("creator-brand-title").textContent = t("brand");
+          }
+          updateLangButtonLabel();
+
+          document.getElementById("creator-lang-btn").addEventListener("click", () => {
+            currentLang = currentLang === "en" ? "bn" : "en";
+            updateLangButtonLabel();
+            renderStep();
+          });
+
+          function renderRail() {
+            const rail = document.getElementById("step-rail");
+            document.getElementById("header-progress-text").textContent = t("stepOf", state.currentStep);
+            const labels = t("steps");
+            rail.innerHTML = labels
+              .map((label, idx) => {
+                const num = idx + 1;
+                const cls = num === state.currentStep ? "active" : num < state.currentStep ? "done" : "";
+                return `
+                  <button type="button" class="step-node ${cls}" data-step="${num}">
+                    <span class="step-num">${num < state.currentStep ? "✓" : num}</span>
+                    <span>${label}</span>
+                  </button>
+                `;
+              })
+              .join("");
+
+            rail.querySelectorAll(".step-node").forEach((btn) => {
+              btn.addEventListener("click", () => {
+                state.currentStep = Number(btn.dataset.step);
+                renderStep();
+              });
+            });
+          }
+
+          function renderStep() {
+            renderRail();
+            const container = document.getElementById("step-container");
+            const s = state.currentStep;
+            if (s === 1) renderStep1(container);
+            else if (s === 2) renderStep2(container);
+            else if (s === 3) renderStep3(container);
+            else if (s === 4) renderStep4(container);
+            else if (s === 5) renderStep5(container);
+            else if (s === 6) renderStep6(container);
+            else if (s === 7) renderStep7(container);
+          }
+
+          function renderFooter(container) {
+            const footer = document.createElement("div");
+            footer.className = "step-footer";
+            footer.innerHTML = `
+              <div>
+                ${state.currentStep > 1 ? `<button type="button" class="btn btn-secondary" id="prev-step-btn">${t("back")}</button>` : ""}
+              </div>
+              <div>
+                ${state.currentStep < 7 ? `<button type="button" class="btn btn-primary" id="next-step-btn">${t("next")} →</button>` : ""}
+              </div>
+            `;
+            container.appendChild(footer);
+
+            const prevBtn = footer.querySelector("#prev-step-btn");
+            if (prevBtn) {
+              prevBtn.addEventListener("click", () => {
+                state.currentStep--;
+                renderStep();
+                window.scrollTo({ top: 0, behavior: "smooth" });
+              });
+            }
+            const nextBtn = footer.querySelector("#next-step-btn");
+            if (nextBtn) {
+              nextBtn.addEventListener("click", () => {
+                state.currentStep++;
+                renderStep();
+                window.scrollTo({ top: 0, behavior: "smooth" });
+              });
+            }
+          }
+
+          // STEP 1
+          function renderStep1(container) {
+            container.innerHTML = `
+              <div class="step-kicker">${t("s1Kicker")}</div>
+              <h1 class="step-title">${t("s1Title")}</h1>
+              <p class="step-desc">${t("s1Desc")}</p>
+
+              <div class="form-grid">
+                <div class="form-row-2">
+                  <div class="field-group">
+                    <label class="field-label" for="her-name-input">${t("herNameLabel")}</label>
+                    <input id="her-name-input" class="input" type="text" value="${escapeHtml(state.herName)}" placeholder="${t("herNamePh")}" />
+                  </div>
+                  <div class="field-group">
+                    <label class="field-label" for="your-name-input">${t("yourNameLabel")}</label>
+                    <input id="your-name-input" class="input" type="text" value="${escapeHtml(state.yourName)}" placeholder="${t("yourNamePh")}" />
+                  </div>
+                </div>
+
+                <div class="field-group">
+                  <label class="field-label" for="intro-msg-input">${t("introLabel")}</label>
+                  <textarea id="intro-msg-input" class="textarea font-prose" placeholder="${t("introPh")}">${escapeHtml(state.introMessage)}</textarea>
+                </div>
+              </div>
+            `;
+
+            container.querySelector("#her-name-input").addEventListener("input", (e) => (state.herName = e.target.value));
+            container.querySelector("#your-name-input").addEventListener("input", (e) => (state.yourName = e.target.value));
+            container.querySelector("#intro-msg-input").addEventListener("input", (e) => (state.introMessage = e.target.value));
+            renderFooter(container);
+          }
+
+          // STEP 2: Full Date (Day, Month, Year) + Multi-Color Themes & Custom Color Picker
+          function renderStep2(container) {
+            const years = [];
+            for (let y = 2000; y <= 2030; y++) years.push(y);
+            const months = currentLang === "bn" ? MONTHS_BN : MONTHS_EN;
+            const maxDays = getDaysInMonth(state.startMonth, state.startYear);
+            if (state.startDay > maxDays) state.startDay = maxDays;
+
+            const daysList = [];
+            for (let d = 1; d <= maxDays; d++) daysList.push(d);
+
+            const totalDays = calculateDaysTogether(state.startDay, state.startMonth, state.startYear);
+            const formattedDate = `${state.startDay} ${months[state.startMonth]} ${state.startYear}`;
+
+            container.innerHTML = `
+              <div class="step-kicker">${t("s2Kicker")}</div>
+              <h1 class="step-title">${t("s2Title")}</h1>
+              <p class="step-desc">${t("s2Desc")}</p>
+
+              <div class="form-grid">
+                <div class="field-group">
+                  <div class="field-label">${t("occasionLabel")}</div>
+                  <div class="choice-grid">
+                    ${OCCASION_OPTIONS.map(
+                      (o) => `
+                        <button type="button" class="choice-card occasion-opt ${state.occasion === o.en ? "selected" : ""}" data-val="${escapeHtml(o.en)}">
+                          <span class="choice-title">${escapeHtml(currentLang === "bn" ? o.bn : o.en)}</span>
+                        </button>
+                      `
+                    ).join("")}
+                  </div>
+                </div>
+
+                <div class="field-group">
+                  <div class="field-label">${t("relLabel")}</div>
+                  <div class="choice-grid">
+                    ${RELATIONSHIP_OPTIONS.map(
+                      (r) => `
+                        <button type="button" class="choice-card rel-opt ${state.relationshipTag === r.en ? "selected" : ""}" data-val="${escapeHtml(r.en)}">
+                          <span class="choice-title">${escapeHtml(currentLang === "bn" ? r.bn : r.en)}</span>
+                        </button>
+                      `
+                    ).join("")}
+                  </div>
+                </div>
+
+                <div class="field-group">
+                  <div class="field-label">${t("themeLabel")}</div>
+                  <div class="choice-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
+                    ${THEME_OPTIONS.map(
+                      (th) => `
+                        <button type="button" class="choice-card theme-opt ${state.theme === th.id ? "selected" : ""}" data-theme-id="${th.id}">
+                          <div class="theme-swatch-row">
+                            ${th.swatches.map((hex) => `<span class="swatch-dot" style="background:${hex}"></span>`).join("")}
+                          </div>
+                          <span class="choice-title">${escapeHtml(currentLang === "bn" ? th.bn : th.en)}</span>
+                          <span class="choice-sub">${escapeHtml(currentLang === "bn" ? th.subBn : th.subEn)}</span>
+                        </button>
+                      `
+                    ).join("")}
+                    <button type="button" class="choice-card theme-opt ${state.theme === "custom" ? "selected" : ""}" data-theme-id="custom">
+                      <div class="theme-swatch-row">
+                        ${state.customBgColors.map((hex) => `<span class="swatch-dot" style="background:${hex}"></span>`).join("")}
+                      </div>
+                      <span class="choice-title">${t("customBgLabel")}</span>
+                      <span class="choice-sub">3-Color Blend</span>
+                    </button>
+                  </div>
+
+                  <div class="custom-color-bar">
+                    <span style="font-size: 0.84rem; font-weight: 700;">${t("customBgLabel")}:</span>
+                    <label class="color-picker-item">
+                      <span>${t("color1")}</span>
+                      <input type="color" id="bg-c1" value="${state.customBgColors[0]}" />
+                    </label>
+                    <label class="color-picker-item">
+                      <span>${t("color2")}</span>
+                      <input type="color" id="bg-c2" value="${state.customBgColors[1]}" />
+                    </label>
+                    <label class="color-picker-item">
+                      <span>${t("color3")}</span>
+                      <input type="color" id="bg-c3" value="${state.customBgColors[2]}" />
+                    </label>
+                  </div>
+                </div>
+
+                <div class="field-group">
+                  <div class="field-label">${t("dateLabel")}</div>
+                  <div class="form-row-3">
+                    <div>
+                      <label for="day-select" style="font-size: 0.78rem; color: var(--ink-muted);">${t("dayLabel")}</label>
+                      <select id="day-select" class="select">
+                        ${daysList.map((d) => `<option value="${d}" ${Number(state.startDay) === d ? "selected" : ""}>${d}</option>`).join("")}
+                      </select>
+                    </div>
+                    <div>
+                      <label for="month-select" style="font-size: 0.78rem; color: var(--ink-muted);">${t("monthLabel")}</label>
+                      <select id="month-select" class="select">
+                        ${months.map((m, idx) => `<option value="${idx}" ${Number(state.startMonth) === idx ? "selected" : ""}>${m}</option>`).join("")}
+                      </select>
+                    </div>
+                    <div>
+                      <label for="year-select" style="font-size: 0.78rem; color: var(--ink-muted);">${t("yearLabel")}</label>
+                      <select id="year-select" class="select">
+                        ${years.map((y) => `<option value="${y}" ${Number(state.startYear) === y ? "selected" : ""}>${y}</option>`).join("")}
+                      </select>
+                    </div>
+                  </div>
+                  <div id="days-preview" class="days-preview-line tabular-nums">
+                    <img src="./img/love.png" alt="" class="icon-img" />
+                    <span>${t("daysOfUs", totalDays, formattedDate)}</span>
+                  </div>
+                </div>
+              </div>
+            `;
+
+            container.querySelectorAll(".occasion-opt").forEach((btn) =>
+              btn.addEventListener("click", () => {
+                state.occasion = btn.dataset.val;
+                renderStep2(container);
+              })
+            );
+            container.querySelectorAll(".rel-opt").forEach((btn) =>
+              btn.addEventListener("click", () => {
+                state.relationshipTag = btn.dataset.val;
+                renderStep2(container);
+              })
+            );
+            container.querySelectorAll(".theme-opt").forEach((btn) =>
+              btn.addEventListener("click", () => {
+                state.theme = btn.dataset.themeId;
+                applyThemeAndColors(state.theme, state.customBgColors);
+                renderStep2(container);
+              })
+            );
+
+            ["bg-c1", "bg-c2", "bg-c3"].forEach((id, idx) => {
+              container.querySelector(`#${id}`).addEventListener("input", (e) => {
+                state.customBgColors[idx] = e.target.value;
+                state.theme = "custom";
+                applyThemeAndColors("custom", state.customBgColors);
+              });
+            });
+
+            const dSel = container.querySelector("#day-select");
+            const mSel = container.querySelector("#month-select");
+            const ySel = container.querySelector("#year-select");
+
+            function onDateChange() {
+              state.startDay = Number(dSel.value);
+              state.startMonth = Number(mSel.value);
+              state.startYear = Number(ySel.value);
+              const newMax = getDaysInMonth(state.startMonth, state.startYear);
+              if (state.startDay > newMax) state.startDay = newMax;
+              renderStep2(container);
+            }
+            dSel.addEventListener("change", onDateChange);
+            mSel.addEventListener("change", onDateChange);
+            ySel.addEventListener("change", onDateChange);
+
+            renderFooter(container);
+          }
+
+          // STEP 3
+          function renderStep3(container) {
+            container.innerHTML = `
+              <div class="step-kicker">${t("s3Kicker")}</div>
+              <h1 class="step-title">${t("s3Title")}</h1>
+              <p class="step-desc">${t("s3Desc")}</p>
+
+              <div id="photo-dropzone" class="dropzone" tabindex="0" role="button">
+                <img src="./img/rose.png" alt="Gallery" class="icon-img-lg" style="margin-bottom: 0.45rem;" />
+                <div style="font-weight: 600; margin-bottom: 0.25rem;">${t("dropText", state.photos.length)}</div>
+                <div style="font-size: 0.82rem; color: var(--ink-muted);">${t("dropSub")}</div>
+                <input id="photo-file-input" type="file" accept="image/png,image/jpeg,image/webp" multiple class="hidden" />
+              </div>
+
+              <div id="photo-grid-editor" class="photo-grid-editor"></div>
+            `;
+
+            const dropzone = container.querySelector("#photo-dropzone");
+            const fileInput = container.querySelector("#photo-file-input");
+            const grid = container.querySelector("#photo-grid-editor");
+
+            function renderPhotoGrid() {
+              if (state.photos.length === 0) {
+                grid.innerHTML = `<div style="grid-column: 1 / -1; text-align: center; padding: 1.5rem; color: var(--ink-muted); border: 1px solid var(--border); border-radius: 0.75rem;">${t("emptyPhotos")}</div>`;
+                return;
+              }
+
+              grid.innerHTML = state.photos
+                .map(
+                  (ph, idx) => `
+                  <div class="photo-item-card" data-idx="${idx}">
+                    <div class="photo-thumb-wrap">
+                      <img src="${ph.previewUrl}" alt="Photo ${idx + 1}" />
+                      <button type="button" class="photo-remove-btn" data-remove="${idx}" aria-label="Remove">X</button>
+                    </div>
+                    <input type="text" class="input caption-input" style="padding: 0.5rem 0.65rem; font-size: 0.85rem;" data-cap="${idx}" value="${escapeHtml(ph.caption)}" placeholder="${t("captionPh")}" />
+                    <button type="button" class="puzzle-select-btn ${state.puzzleIndex === idx ? "active" : ""}" data-puzzle="${idx}">
+                      <img src="./img/puzzle.png" alt="" class="icon-img" />
+                      <span>${state.puzzleIndex === idx ? t("selectedPuzzle") : t("usePuzzle")}</span>
+                    </button>
+                  </div>
+                `
+                )
+                .join("");
+
+              grid.querySelectorAll("[data-remove]").forEach((btn) =>
+                btn.addEventListener("click", () => {
+                  const idx = Number(btn.dataset.remove);
+                  state.photos.splice(idx, 1);
+                  if (state.puzzleIndex >= state.photos.length) {
+                    state.puzzleIndex = Math.max(0, state.photos.length - 1);
+                  }
+                  renderStep3(container);
+                })
+              );
+
+              grid.querySelectorAll(".caption-input").forEach((inp) =>
+                inp.addEventListener("input", (e) => {
+                  state.photos[Number(inp.dataset.cap)].caption = e.target.value;
+                })
+              );
+
+              grid.querySelectorAll("[data-puzzle]").forEach((btn) =>
+                btn.addEventListener("click", () => {
+                  state.puzzleIndex = Number(btn.dataset.puzzle);
+                  renderPhotoGrid();
+                })
+              );
+            }
+
+            async function handleFiles(fileList) {
+              const files = Array.from(fileList).slice(0, 8 - state.photos.length);
+              for (const file of files) {
+                if (!file.type.startsWith("image/")) continue;
+                try {
+                  const { blob, previewUrl } = await compressImageFile(file);
+                  state.photos.push({
+                    id: `${Date.now()}_${state.photos.length}`,
+                    blob,
+                    previewUrl,
+                    caption: ""
+                  });
+                } catch (err) {
+                  console.error(err);
+                }
+              }
+              renderStep3(container);
+            }
+
+            dropzone.addEventListener("click", () => fileInput.click());
+            dropzone.addEventListener("keydown", (e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                fileInput.click();
+              }
+            });
+            dropzone.addEventListener("dragover", (e) => {
+              e.preventDefault();
+              dropzone.classList.add("dragover");
+            });
+            dropzone.addEventListener("dragleave", () => dropzone.classList.remove("dragover"));
+            dropzone.addEventListener("drop", (e) => {
+              e.preventDefault();
+              dropzone.classList.remove("dragover");
+              handleFiles(e.dataTransfer.files);
+            });
+            fileInput.addEventListener("change", (e) => handleFiles(e.target.files));
+
+            renderPhotoGrid();
+            renderFooter(container);
+          }
+
+          // STEP 4: Notes, Letter, 4 Wax Seal PNGs & 5 Letter Sticker PNGs (NO extra emoji section)
+          function renderStep4(container) {
+            container.innerHTML = `
+              <div class="step-kicker">${t("s4Kicker")}</div>
+              <h1 class="step-title">${t("s4Title")}</h1>
+              <p class="step-desc">${t("s4Desc")}</p>
+
+              <div class="form-grid">
+                <div class="field-group">
+                  <div class="field-label">${t("notesLabel")}</div>
+                  ${state.notes
+                    .map(
+                      (note, idx) => `
+                    <input type="text" class="input font-prose note-input" data-note-idx="${idx}" value="${escapeHtml(note)}" placeholder="${t("notePh", idx + 1)}" />
+                  `
+                    )
+                    .join("")}
+                </div>
+
+                <div class="field-group">
+                  <label class="field-label" for="love-letter-input">${t("letterLabel")}</label>
+                  <textarea id="love-letter-input" class="textarea font-prose" style="min-height: 170px;" placeholder="${t("letterPh")}">${escapeHtml(state.loveLetter)}</textarea>
+                </div>
+
+                <div class="form-row-2">
+                  <div class="field-group">
+                    <div class="field-label">${t("waxLabel")}</div>
+                    <div class="img-picker-row">
+                      ${WAX_SEAL_IMAGES.map(
+                        (s) => `
+                          <button type="button" class="img-pick-btn wax-opt ${state.waxSeal === s.id ? "selected" : ""}" data-wax="${s.id}" title="${s.label}">
+                            <img src="${s.src}" alt="${s.label}" />
+                          </button>
+                        `
+                      ).join("")}
+                    </div>
+                  </div>
+                  <div class="field-group">
+                    <div class="field-label">${t("stickerLabel")}</div>
+                    <div class="img-picker-row">
+                      ${STICKER_IMAGES.map(
+                        (st) => `
+                          <button type="button" class="img-pick-btn sticker-opt ${state.sticker === st.id ? "selected" : ""}" data-sticker="${st.id}" title="${st.label}">
+                            <img src="${st.src}" alt="${st.label}" />
+                          </button>
+                        `
+                      ).join("")}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            `;
+
+            container.querySelectorAll(".note-input").forEach((inp) =>
+              inp.addEventListener("input", () => {
+                state.notes[Number(inp.dataset.noteIdx)] = inp.value;
+              })
+            );
+            container.querySelector("#love-letter-input").addEventListener("input", (e) => {
+              state.loveLetter = e.target.value;
+            });
+            container.querySelectorAll(".wax-opt").forEach((btn) =>
+              btn.addEventListener("click", () => {
+                state.waxSeal = btn.dataset.wax;
+                renderStep4(container);
+              })
+            );
+            container.querySelectorAll(".sticker-opt").forEach((btn) =>
+              btn.addEventListener("click", () => {
+                state.sticker = btn.dataset.sticker;
+                renderStep4(container);
+              })
+            );
+
+            renderFooter(container);
+          }
+
+          // STEP 5: Voice Message (preserved)
+          function renderStep5(container) {
+            container.innerHTML = `
+              <div class="step-kicker">${t("s5Kicker")}</div>
+              <h1 class="step-title">${t("s5Title")}</h1>
+              <p class="step-desc">${t("s5Desc")}</p>
+
+              <div class="voice-studio">
+                <img src="./img/mic.png" alt="Microphone" class="icon-img-lg" />
+                <canvas id="rec-visualizer" class="voice-visualizer" width="420" height="64"></canvas>
+                <div id="rec-timer-label" class="tabular-nums" style="font-size: 1.35rem; font-weight: 700;">
+                  ${state.voiceUrl ? `${state.voiceDuration}s` : "00:00 / 00:45"}
+                </div>
+
+                <div style="display: flex; flex-wrap: wrap; gap: 0.75rem; justify-content: center;">
+                  <button type="button" id="rec-start-btn" class="btn btn-primary">${state.voiceUrl ? t("reRec") : t("startRec")}</button>
+                  <button type="button" id="rec-stop-btn" class="btn btn-secondary hidden">${t("stopRec")}</button>
+                  ${state.voiceUrl ? `<button type="button" id="rec-delete-btn" class="btn btn-ghost">${t("delRec")}</button>` : ""}
+                </div>
+
+                <div id="rec-playback-wrap" class="${state.voiceUrl ? "" : "hidden"}" style="width: 100%; max-width: 380px;">
+                  <audio id="rec-audio-preview" controls src="${state.voiceUrl || ""}" style="width: 100%;"></audio>
+                </div>
+
+                <div style="font-size: 0.82rem; color: var(--ink-muted);">
+                  ${t("uploadAudio")}
+                  <input id="audio-upload-input" type="file" accept="audio/*" style="font-size: 0.8rem; margin-left: 0.4rem;" />
+                </div>
+                <div id="rec-error" style="color: #dc2626; font-size: 0.85rem;"></div>
+              </div>
+            `;
+
+            const startBtn = container.querySelector("#rec-start-btn");
+            const stopBtn = container.querySelector("#rec-stop-btn");
+            const timerLabel = container.querySelector("#rec-timer-label");
+            const visCanvas = container.querySelector("#rec-visualizer");
+            const visCtx = visCanvas.getContext("2d");
+            const errBox = container.querySelector("#rec-error");
+
+            function drawIdleBars() {
+              visCtx.clearRect(0, 0, visCanvas.width, visCanvas.height);
+              visCtx.fillStyle = "rgba(219, 39, 119, 0.25)";
+              for (let x = 10; x < visCanvas.width - 10; x += 12) {
+                const h = 10 + Math.sin(x * 0.08) * 6;
+                visCtx.fillRect(x, 32 - h / 2, 6, h);
+              }
+            }
+            drawIdleBars();
+
+            function stopRecordingCleanup() {
+              if (recTimer) clearInterval(recTimer);
+              if (recAnimId) cancelAnimationFrame(recAnimId);
+              if (recAudioCtx) {
+                recAudioCtx.close().catch(() => {});
+                recAudioCtx = null;
+              }
+              if (mediaRecorder && mediaRecorder.state !== "inactive") mediaRecorder.stop();
+            }
+
+            startBtn.addEventListener("click", async () => {
+              errBox.textContent = "";
+              if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                errBox.textContent = "Microphone unavailable. Please upload an audio file instead.";
+                return;
+              }
+              try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                recChunks = [];
+                recSeconds = 0;
+                mediaRecorder = new MediaRecorder(stream);
+
+                const AudioCtx = window.AudioContext || window.webkitAudioContext;
+                recAudioCtx = new AudioCtx();
+                const src = recAudioCtx.createMediaStreamSource(stream);
+                const analyser = recAudioCtx.createAnalyser();
+                analyser.fftSize = 64;
+                src.connect(analyser);
+                const dataArray = new Uint8Array(analyser.frequencyBinCount);
+
+                const drawLive = () => {
+                  analyser.getByteFrequencyData(dataArray);
+                  visCtx.clearRect(0, 0, visCanvas.width, visCanvas.height);
+                  visCtx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue("--accent").trim() || "#db2777";
+                  const barW = visCanvas.width / dataArray.length;
+                  dataArray.forEach((val, i) => {
+                    const h = Math.max(4, (val / 255) * (visCanvas.height - 8));
+                    visCtx.fillRect(i * barW + 2, (visCanvas.height - h) / 2, Math.max(3, barW - 4), h);
+                  });
+                  recAnimId = requestAnimationFrame(drawLive);
+                };
+                drawLive();
+
+                mediaRecorder.ondataavailable = (e) => {
+                  if (e.data.size > 0) recChunks.push(e.data);
+                };
+                mediaRecorder.onstop = () => {
+                  stream.getTracks().forEach((tr) => tr.stop());
+                  const blob = new Blob(recChunks, { type: mediaRecorder.mimeType || "audio/webm" });
+                  state.voiceBlob = blob;
+                  state.voiceUrl = URL.createObjectURL(blob);
+                  state.voiceDuration = recSeconds;
+                  renderStep5(container);
+                };
+
+                mediaRecorder.start();
+                startBtn.classList.add("hidden");
+                stopBtn.classList.remove("hidden");
+                timerLabel.textContent = "00:00 / 00:45";
+
+                recTimer = setInterval(() => {
+                  recSeconds++;
+                  timerLabel.textContent = `00:${String(recSeconds).padStart(2, "0")} / 00:45`;
+                  if (recSeconds >= 45) stopRecordingCleanup();
+                }, 1000);
+              } catch (err) {
+                errBox.textContent = "Microphone permission denied. Allow mic access or upload audio.";
+              }
+            });
+
+            stopBtn.addEventListener("click", stopRecordingCleanup);
+
+            const delBtn = container.querySelector("#rec-delete-btn");
+            if (delBtn) {
+              delBtn.addEventListener("click", () => {
+                state.voiceBlob = null;
+                state.voiceUrl = null;
+                state.voiceDuration = 0;
+                renderStep5(container);
+              });
+            }
+
+            container.querySelector("#audio-upload-input").addEventListener("change", (e) => {
+              const file = e.target.files[0];
+              if (!file) return;
+              state.voiceBlob = file;
+              state.voiceUrl = URL.createObjectURL(file);
+              state.voiceDuration = 15;
+              renderStep5(container);
+            });
+
+            renderFooter(container);
+          }
+
+          // STEP 6
+          function renderStep6(container) {
+            container.innerHTML = `
+              <div class="step-kicker">${t("s6Kicker")}</div>
+              <h1 class="step-title">${t("s6Title")}</h1>
+              <p class="step-desc">${t("s6Desc")}</p>
+
+              <div class="form-grid">
+                <div class="field-group">
+                  <div class="field-label">${t("promiseLabel")}</div>
+                  ${state.promises
+                    .map(
+                      (pr, idx) => `
+                    <input type="text" class="input font-prose promise-input" data-p-idx="${idx}" value="${escapeHtml(pr)}" placeholder="${t("promisePh", idx + 1)}" />
+                  `
+                    )
+                    .join("")}
+                </div>
+              </div>
+            `;
+
+            container.querySelectorAll(".promise-input").forEach((inp) =>
+              inp.addEventListener("input", () => {
+                state.promises[Number(inp.dataset.pIdx)] = inp.value;
+              })
+            );
+
+            renderFooter(container);
+          }
+
+          // STEP 7
+          function renderStep7(container) {
+            container.innerHTML = `
+              <div class="step-kicker">${t("s7Kicker")}</div>
+              <h1 class="step-title">${t("s7Title")}</h1>
+              <p class="step-desc">${t("s7Desc")}</p>
+
+              <div class="form-grid">
+                <div class="form-row-2">
+                  <div class="field-group">
+                    <label class="field-label" for="gift-password-input">${t("passLabel")}</label>
+                    <input id="gift-password-input" class="input" type="text" value="${escapeHtml(state.password)}" placeholder="${t("passPh")}" />
+                  </div>
+
+                  <div class="field-group">
+                    <label class="field-label" for="gift-hint-input">${t("hintLabel")}</label>
+                    <input id="gift-hint-input" class="input" type="text" value="${escapeHtml(state.passwordHint)}" placeholder="${t("hintPh")}" />
+                  </div>
+                </div>
+
+                <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 1rem; margin-top: 0.4rem;">
+                  <button type="button" id="generate-link-btn" class="btn btn-primary" style="padding: 0.85rem 1.8rem; font-size: 1rem;">
+                    <img src="./img/sparkle.png" alt="" class="icon-img" />
+                    <span>${t("generateBtn")}</span>
+                  </button>
+                  <span id="publish-status" style="font-size: 0.88rem; color: var(--ink-muted);"></span>
+                </div>
+
+                <div id="publish-error" style="color: #dc2626; font-size: 0.88rem;"></div>
+
+                <div id="result-box" class="result-box ${state.generatedLink ? "" : "hidden"}">
+                  <div style="font-weight: 700; font-size: 1.05rem; display:flex; align-items:center; gap:0.5rem;">
+                    <img src="./img/sticker_gift.png" alt="" class="icon-img-md" />
+                    <span>${t("readyTitle")}</span>
+                  </div>
+                  <div id="generated-link-text" class="link-display">${escapeHtml(state.generatedLink)}</div>
+                  <div style="display: flex; flex-wrap: wrap; gap: 0.75rem;">
+                    <button type="button" id="copy-link-btn" class="btn btn-primary">${t("copyLink")}</button>
+                    <a id="open-link-btn" href="${escapeHtml(state.generatedLink || "#")}" class="btn btn-secondary">${t("openGift")} →</a>
+                  </div>
+                </div>
+              </div>
+            `;
+
+            const passInp = container.querySelector("#gift-password-input");
+            const hintInp = container.querySelector("#gift-hint-input");
+            const genBtn = container.querySelector("#generate-link-btn");
+            const statusTxt = container.querySelector("#publish-status");
+            const errTxt = container.querySelector("#publish-error");
+            const resultBox = container.querySelector("#result-box");
+            const linkDisplay = container.querySelector("#generated-link-text");
+            const copyBtn = container.querySelector("#copy-link-btn");
+            const openBtn = container.querySelector("#open-link-btn");
+
+            passInp.addEventListener("input", (e) => (state.password = e.target.value));
+            hintInp.addEventListener("input", (e) => (state.passwordHint = e.target.value));
+
+            genBtn.addEventListener("click", async () => {
+              errTxt.textContent = "";
+              if (!state.password.trim()) {
+                errTxt.textContent = t("needPassErr");
+                return;
+              }
+
+              genBtn.disabled = true;
+              genBtn.innerHTML = `<span class="spinner"></span> ${t("creatingBtn")}`;
+
+              try {
+                const giftId = generateGiftId();
+                const now = Date.now();
+                const expiresAt = now + SEVEN_DAYS_MS;
+
+                const uploadedPhotos = [];
+                const imgPaths = [];
+                for (let i = 0; i < state.photos.length; i++) {
+                  statusTxt.textContent = `Uploading image ${i + 1}/${state.photos.length} → img/i...`;
+                  const ph = state.photos[i];
+                  const objPath = `${SUPABASE_IMG_FOLDER}/${giftId}_photo_${i}_${now}.jpg`;
+                  const url = await uploadToSupabaseBucket(SUPABASE_IMG_BUCKET, objPath, ph.blob);
+                  imgPaths.push(objPath);
+                  uploadedPhotos.push({ url, caption: ph.caption || "" });
+                }
+
+                let uploadedVoiceUrl = "";
+                let voiPath = "";
+                if (state.voiceBlob) {
+                  statusTxt.textContent = "Uploading voice note → voi/v...";
+                  const ext = (state.voiceBlob.type || "").includes("mp4") ? "m4a" : "webm";
+                  voiPath = `${SUPABASE_VOI_FOLDER}/${giftId}_voice_${now}.${ext}`;
+                  uploadedVoiceUrl = await uploadToSupabaseBucket(SUPABASE_VOI_BUCKET, voiPath, state.voiceBlob);
+                }
+
+                statusTxt.textContent = "Saving to Firebase Realtime Database...";
+                const payload = {
+                  herName: state.herName.trim() || "My Love",
+                  yourName: state.yourName.trim() || "Yours",
+                  introMessage: state.introMessage.trim(),
+                  occasion: state.occasion,
+                  relationshipTag: state.relationshipTag,
+                  theme: state.theme,
+                  customBgColors: state.customBgColors,
+                  startDay: Number(state.startDay),
+                  startMonth: Number(state.startMonth),
+                  startYear: Number(state.startYear),
+                  photos: uploadedPhotos,
+                  puzzleIndex: Math.min(state.puzzleIndex, Math.max(0, uploadedPhotos.length - 1)),
+                  notes: state.notes.map((n) => n.trim()).filter(Boolean),
+                  loveLetter: state.loveLetter.trim(),
+                  waxSeal: state.waxSeal,
+                  sticker: state.sticker,
+                  voiceUrl: uploadedVoiceUrl,
+                  voiceDuration: state.voiceDuration || 0,
+                  promises: state.promises.map((p) => p.trim()).filter(Boolean),
+                  password: state.password.trim(),
+                  passwordHint: state.passwordHint.trim(),
+                  storagePaths: { imgPaths, voiPath },
+                  createdAt: now,
+                  expiresAt: expiresAt
+                };
+
+                await saveGiftRecord(giftId, payload);
+
+                const finalUrl = `${getCleanBaseUrl()}?id=${giftId}`;
+                state.generatedLink = finalUrl;
+                linkDisplay.textContent = finalUrl;
+                openBtn.href = finalUrl;
+                resultBox.classList.remove("hidden");
+                statusTxt.textContent = `Valid for 7 days (until ${new Date(expiresAt).toLocaleDateString()})`;
+                triggerConfettiBurst(100);
+              } catch (err) {
+                console.error(err);
+                errTxt.textContent = `Error: ${err.message || err}`;
+                statusTxt.textContent = "";
+              } finally {
+                genBtn.disabled = false;
+                genBtn.innerHTML = `<img src="./img/sparkle.png" alt="" class="icon-img" /><span>${t("generateBtn")}</span>`;
+              }
+            });
+
+            copyBtn.addEventListener("click", async () => {
+              if (!state.generatedLink) return;
+              try {
+                await navigator.clipboard.writeText(state.generatedLink);
+                copyBtn.textContent = t("copied");
+                setTimeout(() => (copyBtn.textContent = t("copyLink")), 2000);
+              } catch {
+                copyBtn.textContent = "Select & Copy above";
+              }
+            });
+
+            renderFooter(container);
+          }
+
+          renderStep();
+        }
+
+        // =========================================================
+        // RECEIVER MODE (?id=...) — ZERO EMOJIS, FULL IMAGE ASSETS
+        // =========================================================
+        async function initReceiverMode(giftId) {
+          const receiverApp = document.getElementById("receiver-app");
+          const stageRoot = document.getElementById("receiver-stage-root");
+          receiverApp.classList.remove("hidden");
+
+          const rLangBtn = document.getElementById("receiver-lang-btn");
+          const updateRLangBtn = () => {
+            rLangBtn.textContent = "E / B";
+          };
+          updateRLangBtn();
+
+          stageRoot.innerHTML = `
+            <section class="stage-screen">
+              <div class="spinner" style="width: 36px; height: 36px; border-color: var(--border); border-top-color: var(--accent);"></div>
+              <p style="margin-top: 1rem; color: var(--ink-muted);">Loading keepsake...</p>
+            </section>
+          `;
+
+          let giftData = null;
+          try {
+            giftData = await loadGiftRecord(giftId);
+          } catch (err) {
+            console.error(err);
+          }
+
+          if (giftData && giftData.expiresAt && Date.now() >= giftData.expiresAt) {
+            await deleteGiftAndMedia(giftId, giftData);
+            stageRoot.innerHTML = `
+              <section class="stage-screen" style="text-align: center;">
+                <div class="lock-envelope">
+                  <img src="./img/rose.png" alt="" class="lock-flower-top" />
+                  <h1 class="font-serif-display" style="font-size: 2rem; margin-bottom: 0.5rem;">This keepsake has expired</h1>
+                  <p style="color: var(--ink-muted); font-size: 0.94rem; margin-bottom: 1.5rem;">
+                    Gifts are automatically removed after 7 days.
+                  </p>
+                  <a href="${escapeHtml(getCleanBaseUrl())}" class="btn btn-primary">Create a New Gift</a>
+                </div>
+              </section>
+            `;
+            return;
+          }
+
+          if (!giftData) {
+            stageRoot.innerHTML = `
+              <section class="stage-screen" style="text-align: center;">
+                <div class="lock-envelope">
+                  <img src="./img/letter.png" alt="" class="lock-flower-top" />
+                  <h1 class="font-serif-display" style="font-size: 2rem; margin-bottom: 0.5rem;">Gift Not Found</h1>
+                  <p style="color: var(--ink-muted); font-size: 0.94rem; margin-bottom: 1.5rem;">
+                    We could not locate this keepsake, or it has expired after 7 days.
+                  </p>
+                  <a href="${escapeHtml(getCleanBaseUrl())}" class="btn btn-primary">Create a New Gift</a>
+                </div>
+              </section>
+            `;
+            return;
+          }
+
+          giftData.photos = toArr(giftData.photos);
+          giftData.notes = toArr(giftData.notes);
+          giftData.promises = toArr(giftData.promises);
+
+          applyThemeAndColors(giftData.theme || "deep-rose-gold", giftData.customBgColors);
+          document.getElementById("receiver-brand-label").textContent = `${giftData.herName}'s Museum`;
+
+          let curtainParted = false;
+          let currentViewFn = showLockScreen;
+          rLangBtn.addEventListener("click", () => {
+            currentLang = currentLang === "en" ? "bn" : "en";
+            updateRLangBtn();
+            if (typeof currentViewFn === "function") currentViewFn();
+          });
+
+          // STAGE 1: Lock Screen (Flower image preserved above + Text/Number Password)
+          function showLockScreen() {
+            currentViewFn = showLockScreen;
+            stageRoot.innerHTML = `
+              <section class="stage-screen">
+                <div id="lock-card" class="lock-envelope">
+                  <img src="./img/rose.png" alt="Rose" class="lock-flower-top" />
+                  <div style="font-size: 0.8rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); font-weight: 700;">
+                    ${escapeHtml(giftData.occasion || "Special Gift")} · ${escapeHtml(giftData.yourName)}
+                  </div>
+                  <h1 class="font-serif-display" style="font-size: 2.35rem; margin: 0.35rem 0 0.45rem;">
+                    ${t("forPrefix")} ${escapeHtml(giftData.herName)}
+                  </h1>
+                  <p style="color: var(--ink-muted); font-size: 0.92rem; margin-bottom: 1.4rem;">
+                    ${t("unlockPrompt")}
+                  </p>
+
+                  <form id="unlock-form" class="form-grid" style="gap: 0.85rem;">
+                    <div class="password-input-wrap">
+                      <input id="unlock-pass-input" class="input" type="text" autocomplete="off" placeholder="${t("passInputPh")}" style="text-align: center; font-size: 1.05rem; padding-right: 3.5rem;" />
+                      <button type="button" id="toggle-pass-vis" class="password-eye-btn" aria-label="Toggle visibility">Hide</button>
+                    </div>
+                    <button type="submit" id="unlock-submit-btn" class="btn btn-primary" style="width: 100%;">
+                      <img src="./img/lock.png" alt="" class="icon-img" />
+                      <span>${t("openGiftBtn")}</span>
+                    </button>
+                  </form>
+
+                  ${
+                    giftData.passwordHint
+                      ? `<div id="hint-reveal" class="lock-hint-bar">${t("needHint")}: &ldquo;${escapeHtml(giftData.passwordHint)}&rdquo;</div>`
+                      : ""
+                  }
+
+                  <div id="unlock-feedback" style="margin-top: 0.75rem; font-size: 0.88rem; color: #dc2626;"></div>
+                </div>
+              </section>
+            `;
+
+            const passInput = stageRoot.querySelector("#unlock-pass-input");
+            const eyeBtn = stageRoot.querySelector("#toggle-pass-vis");
+            let masked = false;
+            eyeBtn.addEventListener("click", () => {
+              masked = !masked;
+              passInput.type = masked ? "password" : "text";
+              eyeBtn.textContent = masked ? "Show" : "Hide";
+            });
+
+            const form = stageRoot.querySelector("#unlock-form");
+            const feedback = stageRoot.querySelector("#unlock-feedback");
+            const lockCard = stageRoot.querySelector("#lock-card");
+
+            form.addEventListener("submit", (e) => {
+              e.preventDefault();
+              const entered = passInput.value.trim();
+              if (entered === String(giftData.password).trim()) {
+                feedback.innerHTML = `<span class="unlock-badge">✓ Unlocked</span>`;
+                lockCard.classList.add("unlocked");
+                SoundEngine.playChime();
+                const rect = lockCard.getBoundingClientRect();
+                triggerImageBurst(rect.left + rect.width / 2, rect.top + rect.height / 3, 42);
+                setTimeout(showIntroInvite, 900);
+              } else {
+                feedback.textContent = t("wrongPass");
+                lockCard.animate(
+                  [{ transform: "translateX(0)" }, { transform: "translateX(-8px)" }, { transform: "translateX(8px)" }, { transform: "translateX(0)" }],
+                  { duration: 260 }
+                );
+              }
+            });
+          }
+
+          // STAGE 2A: Intro Invite
+          function showIntroInvite() {
+            currentViewFn = showIntroInvite;
+            stageRoot.innerHTML = `
+              <section class="stage-screen">
+                <div id="intro-invite" class="intro-invite-card">
+                  <div style="margin-bottom: 0.75rem;">
+                    <img src="./img/rose.png" alt="Rose" style="width: 82px; height: 82px; object-fit: contain;" />
+                  </div>
+                  <div style="font-size: 0.82rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); font-weight: 700;">
+                    TO: ${escapeHtml(giftData.herName)}
+                  </div>
+                  <h2 class="font-serif-display" style="font-size: clamp(1.85rem, 4vw, 2.55rem); margin: 0.65rem 0;">
+                    Something is waiting for you.
+                  </h2>
+                  <p style="color: var(--ink-muted); font-size: 0.96rem; margin-bottom: 1.5rem; display:flex; align-items:center; justify-content:center; gap:0.45rem;">
+                    <span>Open it with the sound on</span>
+                    <img src="./img/music.png" alt="" class="icon-img" />
+                  </p>
+                  <span class="btn btn-primary">Tap to Open</span>
+                </div>
+              </section>
+            `;
+
+            stageRoot.querySelector("#intro-invite").addEventListener("click", () => {
+              document.getElementById("sound-toggle-btn").classList.remove("hidden");
+              SoundEngine.startMusic();
+              startLargeFlowerRain();
+              showInteractiveFlowerCurtain();
+            });
+          }
+
+          // STAGE 2B: Interactive Flower Curtain + Clean Couple Illustration
+          function showInteractiveFlowerCurtain() {
+            currentViewFn = showInteractiveFlowerCurtain;
+            const flowerSlots = Array.from({ length: 15 }).map((_, i) => FLOWER_FILES[i % FLOWER_FILES.length]);
+
+            stageRoot.innerHTML = `
+              <section class="stage-screen">
+                <div class="couple-stage">
+                  <div class="couple-svg-wrap">
+                    <img src="./img/cup.jpg" alt="Couple" style="width: 100%; border-radius: 1rem; box-shadow: var(--shadow); object-fit: cover; display: block;" />
+                  </div>
+
+                  <p class="font-serif-display" style="font-size: clamp(1.65rem, 3.8vw, 2.35rem); font-style: italic; line-height: 1.35; margin-bottom: 1rem;">
+                    "In your smile, I found my peace.<br/>In your love, I found my home."
+                  </p>
+                  <p style="color: var(--ink-muted); font-size: 0.94rem; margin-bottom: 1.75rem;">
+                    ${escapeHtml(giftData.relationshipTag || "")} · ${escapeHtml(giftData.yourName)} & ${escapeHtml(giftData.herName)}
+                  </p>
+                  <button type="button" id="to-collage-btn" class="btn btn-primary">${t("next")} →</button>
+                </div>
+
+                ${
+                  curtainParted
+                    ? ""
+                    : `<div id="flower-curtain" class="flower-curtain-stage" role="button" tabindex="0">
+                  <div class="curtain-half curtain-left">
+                    ${flowerSlots
+                      .map((src, idx) => `<img src="${src}" alt="Flower" class="curtain-flower-img" style="animation-delay: ${(idx * 0.18).toFixed(2)}s;" />`)
+                      .join("")}
+                  </div>
+                  <div class="curtain-half curtain-right">
+                    ${flowerSlots
+                      .slice()
+                      .reverse()
+                      .map((src, idx) => `<img src="${src}" alt="Flower" class="curtain-flower-img" style="animation-delay: ${(idx * 0.22).toFixed(2)}s;" />`)
+                      .join("")}
+                  </div>
+                  <div class="curtain-prompt-pill">
+                    <div style="display:flex; justify-content:center; gap:0.5rem; margin-bottom:0.5rem;">
+                      <img src="./img/rose.png" alt="" class="icon-img-md" />
+                      <img src="./img/lotus.png" alt="" class="icon-img-md" />
+                      <img src="./img/blossom.png" alt="" class="icon-img-md" />
+                    </div>
+                    <div class="font-prose" style="font-weight: 700; font-size: 1.05rem;">${t("curtainTouch")}</div>
+                  </div>
+                </div>`
+                }
+              </section>
+            `;
+
+            const curtain = stageRoot.querySelector("#flower-curtain");
+            if (curtain) {
+              function partCurtain() {
+                if (curtainParted) return;
+                curtainParted = true;
+                SoundEngine.playChime();
+                curtain.style.pointerEvents = "none";
+                curtain.classList.add("parted");
+                scatterCurtainFlowers();
+                setTimeout(() => {
+                  if (curtain && curtain.parentNode) curtain.remove();
+                }, 1300);
+              }
+
+              curtain.addEventListener("pointerdown", partCurtain);
+              curtain.addEventListener("click", partCurtain);
+              curtain.addEventListener("keydown", (e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  partCurtain();
+                }
+              });
+            }
+
+            stageRoot.querySelector("#to-collage-btn").addEventListener("click", () => {
+              const photos = giftData.photos || [];
+              if (photos.length > 0) showCollageWall();
+              else showBowAndArrow();
+            });
+          }
+
+          // STAGE 3: Floating Photo Collage Wall
+          function showCollageWall() {
+            currentViewFn = showCollageWall;
+            const photos = giftData.photos || [];
+            const rotations = ["-4deg", "3deg", "-2.5deg", "4deg", "-3deg", "2.5deg", "-1.5deg", "3.5deg"];
+
+            stageRoot.innerHTML = `
+              <section class="stage-screen">
+                <div id="collage-tap-area" class="collage-wall">
+                  <div style="font-size: 0.82rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); font-weight: 700;">
+                    Our Polaroid Wall
+                  </div>
+                  <h2 class="font-serif-display" style="font-size: clamp(1.85rem, 4vw, 2.75rem); margin-top: 0.35rem;">
+                    See what ${escapeHtml(giftData.yourName)} built for you
+                  </h2>
+
+                  <div class="polaroid-grid">
+                    ${photos
+                      .map(
+                        (ph, idx) => `
+                        <div class="polaroid-card" style="--rot: ${rotations[idx % rotations.length]}; --delay: ${(idx * 0.45).toFixed(2)}s;">
+                          <img src="${escapeHtml(ph.url)}" alt="${escapeHtml(ph.caption || "Memory")}" />
+                          <div class="polaroid-caption">${escapeHtml(ph.caption || "")}</div>
+                        </div>
+                      `
+                      )
+                      .join("")}
+                  </div>
+
+                  <p style="color: var(--ink-muted); font-size: 0.96rem; font-weight: 600; animation: gentlePulse 2.2s infinite;">
+                    Tap anywhere to continue
+                  </p>
+                </div>
+              </section>
+            `;
+
+            stageRoot.querySelector("#collage-tap-area").addEventListener("click", showBowAndArrow);
+          }
+
+          // STAGE 4: Bow & Arrow using love.png (PNG Heart Target + Arrow Tip!)
+          function showBowAndArrow() {
+            currentViewFn = showBowAndArrow;
+            stageRoot.innerHTML = `
+              <section class="stage-screen">
+                <div class="bow-stage-wrap">
+                  <div>
+                    <div style="font-size: 0.8rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); font-weight: 700;">
+                      Aim for the Heart
+                    </div>
+                    <h2 class="font-serif-display" style="font-size: clamp(1.7rem, 3.8vw, 2.4rem);">
+                      Pull back the bow & let go
+                    </h2>
+                  </div>
+
+                  <canvas id="bow-canvas" width="720" height="360"></canvas>
+
+                  <div id="bow-controls">
+                    <button type="button" id="quick-shoot-btn" class="btn btn-secondary">
+                      <img src="./img/love.png" alt="" class="icon-img" />
+                      <span>Pull & Shoot</span>
+                    </button>
+                  </div>
+
+                  <div id="first-msg-box" class="first-msg-reveal hidden">
+                    <div style="font-size: 0.78rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); font-weight: 700; margin-bottom: 0.5rem;">
+                      For ${escapeHtml(giftData.herName)}
+                    </div>
+                    <p class="font-prose" style="font-size: clamp(1.2rem, 2.8vw, 1.55rem); line-height: 1.65; margin-bottom: 1.25rem;">
+                      ${escapeHtml(giftData.introMessage || "")}
+                    </p>
+                    <button type="button" id="to-tree-btn" class="btn btn-primary">${t("next")} →</button>
+                  </div>
+                </div>
+              </section>
+            `;
+
+            const canvas = stageRoot.querySelector("#bow-canvas");
+            const ctx = canvas.getContext("2d");
+            const quickBtn = stageRoot.querySelector("#quick-shoot-btn");
+            const msgBox = stageRoot.querySelector("#first-msg-box");
+            const toTreeBtn = stageRoot.querySelector("#to-tree-btn");
+            const loveImg = imageCache["./img/love.png"] || preloadImg("./img/love.png");
+
+            let pulling = false;
+            let pullAmount = 0;
+            let arrowFired = false;
+            let arrowHit = false;
+            let arrowX = 125;
+            const arrowY = 180;
+            let arrowVx = 0;
+            let heartPulse = 0;
+            const targetX = 565;
+            const targetY = 180;
+            let animId = null;
+
+            function launchArrow(power = 55) {
+              if (arrowFired) return;
+              arrowFired = true;
+              arrowVx = 12 + power * 0.18;
+              pullAmount = 0;
+              quickBtn.classList.add("hidden");
+            }
+
+            function getPos(e) {
+              const rect = canvas.getBoundingClientRect();
+              return {
+                x: ((e.clientX - rect.left) / rect.width) * canvas.width,
+                y: ((e.clientY - rect.top) / rect.height) * canvas.height
+              };
+            }
+
+            canvas.addEventListener("pointerdown", (e) => {
+              if (arrowFired) return;
+              pulling = true;
+              try {
+                canvas.setPointerCapture(e.pointerId);
+              } catch (_) {}
+              pullAmount = Math.max(15, Math.min(68, 160 - getPos(e).x));
+            });
+            canvas.addEventListener("pointermove", (e) => {
+              if (!pulling || arrowFired) return;
+              pullAmount = Math.max(10, Math.min(68, 165 - getPos(e).x));
+            });
+            function releaseBow() {
+              if (!pulling || arrowFired) return;
+              pulling = false;
+              launchArrow(Math.max(42, pullAmount));
+            }
+            canvas.addEventListener("pointerup", releaseBow);
+            canvas.addEventListener("pointercancel", releaseBow);
+            quickBtn.addEventListener("click", () => launchArrow(58));
+
+            function drawFallbackHeart(cx, cy, size, fill) {
+              ctx.save();
+              ctx.translate(cx, cy);
+              ctx.fillStyle = fill;
+              ctx.beginPath();
+              ctx.moveTo(0, size * 0.35);
+              ctx.bezierCurveTo(-size * 0.65, -size * 0.15, -size * 0.45, -size * 0.65, 0, -size * 0.25);
+              ctx.bezierCurveTo(size * 0.45, -size * 0.65, size * 0.65, -size * 0.15, 0, size * 0.35);
+              ctx.fill();
+              ctx.restore();
+            }
+
+            function drawBowScene() {
+              ctx.clearRect(0, 0, canvas.width, canvas.height);
+              heartPulse += 0.05;
+              const accentColor = getComputedStyle(document.documentElement).getPropertyValue("--accent").trim() || "#db2777";
+              const inkColor = getComputedStyle(document.documentElement).getPropertyValue("--ink").trim() || "#2c101b";
+
+              // Target love.png floating heart
+              if (!arrowHit) {
+                const s = 1 + Math.sin(heartPulse) * 0.06;
+                const ty = targetY + Math.sin(heartPulse * 0.7) * 8;
+                ctx.save();
+                ctx.translate(targetX, ty);
+                ctx.scale(s, s);
+                ctx.shadowColor = accentColor;
+                ctx.shadowBlur = 24;
+                if (isImgReady(loveImg)) {
+                  ctx.drawImage(loveImg, -48, -48, 96, 96);
+                } else {
+                  drawFallbackHeart(0, 8, 86, accentColor);
+                }
+                ctx.restore();
+              }
+
+              const bowX = 125;
+              const bowY = 180;
+              const stringPullX = bowX - 18 - (arrowFired ? 0 : pullAmount);
+
+              ctx.strokeStyle = inkColor;
+              ctx.lineWidth = 2;
+              ctx.beginPath();
+              ctx.moveTo(bowX - 10, bowY - 72);
+              ctx.lineTo(stringPullX, bowY);
+              ctx.lineTo(bowX - 10, bowY + 72);
+              ctx.stroke();
+
+              ctx.strokeStyle = "#d97706";
+              ctx.lineWidth = 7;
+              ctx.lineCap = "round";
+              ctx.beginPath();
+              ctx.moveTo(bowX - 10, bowY - 72);
+              ctx.quadraticCurveTo(bowX + 42, bowY, bowX - 10, bowY + 72);
+              ctx.stroke();
+
+              if (arrowFired && !arrowHit) {
+                arrowX += arrowVx;
+                if (arrowX >= targetX - 30) {
+                  arrowHit = true;
+                  SoundEngine.playChime();
+                  const rect = canvas.getBoundingClientRect();
+                  triggerImageBurst(
+                    rect.left + (targetX / canvas.width) * rect.width,
+                    rect.top + (targetY / canvas.height) * rect.height,
+                    80
+                  );
+                  msgBox.classList.remove("hidden");
+                }
+              }
+
+              if (!arrowHit) {
+                const drawAX = arrowFired ? arrowX : stringPullX;
+                ctx.strokeStyle = accentColor;
+                ctx.lineWidth = 3.5;
+                ctx.beginPath();
+                ctx.moveTo(drawAX, arrowY);
+                ctx.lineTo(drawAX + 78, arrowY);
+                ctx.stroke();
+
+                // Shoot with love.png at the tip of the arrow!
+                if (isImgReady(loveImg)) {
+                  ctx.drawImage(loveImg, drawAX + 70, arrowY - 14, 28, 28);
+                } else {
+                  drawFallbackHeart(drawAX + 84, arrowY + 2, 24, accentColor);
+                }
+                animId = requestAnimationFrame(drawBowScene);
+              } else {
+                if (isImgReady(loveImg)) {
+                  ctx.drawImage(loveImg, canvas.width / 2 - 44, canvas.height / 2 - 58, 88, 88);
+                } else {
+                  drawFallbackHeart(canvas.width / 2, canvas.height / 2 - 12, 76, accentColor);
+                }
+                ctx.fillStyle = accentColor;
+                ctx.font = "600 26px Georgia, serif";
+                ctx.textAlign = "center";
+                ctx.fillText("Bullseye!", canvas.width / 2, canvas.height / 2 + 56);
+              }
+            }
+            drawBowScene();
+
+            toTreeBtn.addEventListener("click", () => {
+              if (animId) cancelAnimationFrame(animId);
+              showHeartTree();
+            });
+          }
+
+          // STAGE 5: Growing Blossom Tree (Uses PNG Flowers: blossom.png, rose.png, lotus.png, marigold.png)
+          function showHeartTree() {
+            currentViewFn = showHeartTree;
+            stageRoot.innerHTML = `
+              <section class="stage-screen">
+                <div style="width: 100%; max-width: 700px; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.25rem;">
+                  <div style="font-size: 0.8rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); font-weight: 700; display:flex; align-items:center; gap:0.45rem;">
+                    <span>Always You</span>
+                    <img src="./img/blossom.png" alt="" class="icon-img" />
+                  </div>
+                  <h2 class="font-serif-display" style="font-size: clamp(1.85rem, 4vw, 2.6rem);">
+                    It's always been you
+                  </h2>
+                  <canvas id="tree-canvas" width="660" height="410"></canvas>
+                  <button type="button" id="to-doors-btn" class="btn btn-primary">${t("next")} →</button>
+                </div>
+              </section>
+            `;
+
+            const canvas = stageRoot.querySelector("#tree-canvas");
+            const ctx = canvas.getContext("2d");
+            const branches = [];
+            const blossoms = [];
+            const blossomSources = ["./img/blossom.png", "./img/rose.png", "./img/lotus.png", "./img/marigold.png", "./img/love.png"];
+
+            function buildBranch(x, y, len, angle, depth, delay) {
+              if (depth === 0) {
+                for (let k = 0; k < 3; k++) {
+                  const src = blossomSources[Math.floor(Math.random() * blossomSources.length)];
+                  blossoms.push({
+                    x: x + (Math.random() - 0.5) * 38,
+                    y: y + (Math.random() - 0.5) * 34,
+                    img: imageCache[src] || preloadImg(src),
+                    size: 26 + Math.random() * 18,
+                    delay: delay + 0.15 + Math.random() * 0.5,
+                    sway: Math.random() * Math.PI * 2,
+                    rot: (Math.random() - 0.5) * 0.8
+                  });
+                }
+                return;
+              }
+              const x2 = x + Math.cos(angle) * len;
+              const y2 = y + Math.sin(angle) * len;
+              branches.push({ x1: x, y1: y, x2, y2, width: depth * 2.1, delay });
+              buildBranch(x2, y2, len * 0.74, angle - 0.36 - Math.random() * 0.12, depth - 1, delay + 0.16);
+              buildBranch(x2, y2, len * 0.74, angle + 0.36 + Math.random() * 0.12, depth - 1, delay + 0.16);
+            }
+            buildBranch(330, 385, 86, -Math.PI / 2, 6, 0);
+
+            let startTime = null;
+            let treeAnimId = null;
+
+            function animateTree(ts) {
+              if (!startTime) startTime = ts;
+              const elapsed = (ts - startTime) / 1000;
+              ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+              ctx.fillStyle = "rgba(157, 23, 77, 0.12)";
+              ctx.beginPath();
+              ctx.ellipse(330, 392, 160, 18, 0, 0, Math.PI * 2);
+              ctx.fill();
+
+              ctx.strokeStyle = "#6b2d3c";
+              ctx.lineCap = "round";
+              for (const b of branches) {
+                const p = Math.max(0, Math.min(1, (elapsed - b.delay) / 0.35));
+                if (p <= 0) continue;
+                ctx.lineWidth = b.width;
+                ctx.beginPath();
+                ctx.moveTo(b.x1, b.y1);
+                ctx.lineTo(b.x1 + (b.x2 - b.x1) * p, b.y1 + (b.y2 - b.y1) * p);
+                ctx.stroke();
+              }
+
+              // Blooming PNG flowers!
+              for (const bl of blossoms) {
+                const p = Math.max(0, Math.min(1, (elapsed - bl.delay) / 0.45));
+                if (p <= 0) continue;
+                ctx.save();
+                const bob = Math.sin(elapsed * 2 + bl.sway) * 2.5;
+                ctx.translate(bl.x, bl.y + bob);
+                ctx.rotate(bl.rot + Math.sin(elapsed + bl.sway) * 0.08);
+                ctx.scale(p, p);
+                if (isImgReady(bl.img)) {
+                  ctx.drawImage(bl.img, -bl.size / 2, -bl.size / 2, bl.size, bl.size);
+                } else {
+                  ctx.fillStyle = "#f472b6";
+                  ctx.beginPath();
+                  ctx.arc(0, 0, bl.size * 0.34, 0, Math.PI * 2);
+                  ctx.fill();
+                }
+                ctx.restore();
+              }
+
+              treeAnimId = requestAnimationFrame(animateTree);
+            }
+            treeAnimId = requestAnimationFrame(animateTree);
+
+            stageRoot.querySelector("#to-doors-btn").addEventListener("click", () => {
+              if (treeAnimId) cancelAnimationFrame(treeAnimId);
+              showMuseumDoors();
+            });
+          }
+
+          // STAGE 6A: Modern Arched Museum Doors
+          function showMuseumDoors() {
+            currentViewFn = showMuseumDoors;
+            let knocks = 0;
+            stageRoot.innerHTML = `
+              <section class="stage-screen">
+                <div class="doors-stage">
+                  <div style="font-size: 0.8rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); font-weight: 700;">
+                    Private Exhibition
+                  </div>
+                  <h2 class="font-serif-display" style="font-size: clamp(2rem, 4.5vw, 2.8rem); line-height: 1.2;">
+                    The Museum of ${escapeHtml(giftData.herName)}
+                  </h2>
+                  <p id="knock-prompt" style="color: var(--ink-muted); font-size: 1rem;">
+                    ${t("knockText", 0)}
+                  </p>
+
+                  <div class="portal-arch" id="portal-arch">
+                    <div id="museum-doors" class="museum-door-frame" role="button" tabindex="0">
+                      <div class="door-glow"></div>
+                      <div class="door-leaf door-left">
+                        <div class="door-inlay"><div class="door-knob"></div></div>
+                      </div>
+                      <div class="door-leaf door-right">
+                        <div class="door-inlay"><div class="door-knob"></div></div>
+                      </div>
+                      <div class="door-center-crest">
+                        <img src="./img/love.png" alt="Door Crest" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </section>
+            `;
+
+            const doors = stageRoot.querySelector("#museum-doors");
+            const portal = stageRoot.querySelector("#portal-arch");
+            const promptTxt = stageRoot.querySelector("#knock-prompt");
+
+            function handleKnock() {
+              if (knocks >= 3) return;
+              knocks++;
+              SoundEngine.playKnock();
+              doors.classList.remove("knocked");
+              void doors.offsetWidth;
+              doors.classList.add("knocked");
+              promptTxt.textContent = t("knockText", knocks);
+
+              const ripple = document.createElement("div");
+              ripple.className = "knock-ripple";
+              doors.appendChild(ripple);
+              setTimeout(() => ripple.remove(), 700);
+
+              if (knocks === 3) {
+                SoundEngine.playChime();
+                doors.classList.add("opening");
+                const rect = doors.getBoundingClientRect();
+                triggerImageBurst(rect.left + rect.width / 2, rect.top + rect.height / 2, 56);
+                setTimeout(() => {
+                  stopLargeFlowerRain();
+                  showMuseumRoom(1);
+                }, 1350);
+              }
+            }
+
+            portal.addEventListener("click", handleKnock);
+            doors.addEventListener("keydown", (e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                handleKnock();
+              }
+            });
+          }
+
+          // STAGE 6B: 5 Museum Rooms
+          function showMuseumRoom(roomNum) {
+            currentViewFn = () => showMuseumRoom(roomNum);
+            const roomTitles = ["1 · Gallery", "2 · Puzzle", "3 · Note Wall", "4 · Reading Room", "5 · Promises"];
+
+            stageRoot.innerHTML = `
+              <section class="museum-shell">
+                <nav class="museum-nav">
+                  <div class="room-tabs">
+                    ${roomTitles
+                      .map((title, idx) => `<button type="button" class="room-tab ${roomNum === idx + 1 ? "active" : ""}" data-room="${idx + 1}">${title}</button>`)
+                      .join("")}
+                  </div>
+                  <div style="font-size: 0.84rem; color: var(--ink-muted); font-weight: 600;">Room ${roomNum} of 5</div>
+                </nav>
+                <div id="room-content"></div>
+              </section>
+            `;
+
+            stageRoot.querySelectorAll(".room-tab").forEach((tab) => {
+              tab.addEventListener("click", () => showMuseumRoom(Number(tab.dataset.room)));
+            });
+
+            const rc = stageRoot.querySelector("#room-content");
+            if (roomNum === 1) renderRoom1Gallery(rc);
+            else if (roomNum === 2) renderRoom2Puzzle(rc);
+            else if (roomNum === 3) renderRoom3NoteWall(rc);
+            else if (roomNum === 4) renderRoom4ReadingRoom(rc);
+            else if (roomNum === 5) renderRoom5Promises(rc);
+          }
+
+          function renderRoom1Gallery(root) {
+            const photos = giftData.photos || [];
+            if (photos.length === 0) {
+              root.innerHTML = `<div style="text-align:center; padding: 3rem;"><p style="color: var(--ink-muted); margin-bottom:1.5rem;">No photographs were added to the gallery.</p><button type="button" id="next-room-btn" class="btn btn-primary">Enter Room 2 →</button></div>`;
+              root.querySelector("#next-room-btn").addEventListener("click", () => showMuseumRoom(2));
+              return;
+            }
+
+            root.innerHTML = `
+              <div style="text-align: center; margin-bottom: 2rem;">
+                <div style="font-size: 0.8rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); font-weight: 700;">Room 01 · The Gallery</div>
+                <h2 class="font-serif-display" style="font-size: clamp(1.8rem, 4vw, 2.5rem); margin: 0.25rem 0;">Scratch the gold foil to reveal</h2>
+                <button type="button" id="reveal-all-scratch" class="btn btn-secondary btn-sm" style="margin-top:0.5rem;">Reveal All</button>
+              </div>
+              <div class="scratch-grid">
+                ${photos
+                  .map(
+                    (ph, idx) => `
+                    <figure class="scratch-frame">
+                      <div class="scratch-canvas-box">
+                        <img src="${escapeHtml(ph.url)}" alt="${escapeHtml(ph.caption)}" />
+                        <canvas class="scratch-overlay" width="320" height="240"></canvas>
+                      </div>
+                      <figcaption class="scratch-caption">Fig. ${idx + 1} ${ph.caption ? "— " + escapeHtml(ph.caption) : ""}</figcaption>
+                    </figure>
+                  `
+                  )
+                  .join("")}
+              </div>
+              <div style="text-align: center; margin-top: 2.5rem;">
+                <button type="button" id="next-room-btn" class="btn btn-primary">Enter Room 2 →</button>
+              </div>
+            `;
+
+            const canvases = root.querySelectorAll(".scratch-overlay");
+            canvases.forEach((canvas) => {
+              const ctx = canvas.getContext("2d");
+              const grad = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+              grad.addColorStop(0, "#d97706");
+              grad.addColorStop(0.5, "#fde047");
+              grad.addColorStop(1, "#b45309");
+              ctx.fillStyle = grad;
+              ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+              ctx.fillStyle = "rgba(70, 20, 40, 0.72)";
+              ctx.font = "600 18px Georgia, serif";
+              ctx.textAlign = "center";
+              ctx.textBaseline = "middle";
+              ctx.fillText("Scratch Gold Foil", canvas.width / 2, canvas.height / 2);
+
+              let scratching = false;
+              let cleared = false;
+              let strokes = 0;
+
+              function scratchAt(cx, cy) {
+                if (cleared) return;
+                const rect = canvas.getBoundingClientRect();
+                const x = ((cx - rect.left) / rect.width) * canvas.width;
+                const y = ((cy - rect.top) / rect.height) * canvas.height;
+                ctx.globalCompositeOperation = "destination-out";
+                ctx.beginPath();
+                ctx.arc(x, y, 26, 0, Math.PI * 2);
+                ctx.fill();
+                strokes++;
+                if (strokes > 26 && strokes % 6 === 0) {
+                  const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+                  let transparent = 0;
+                  for (let i = 3; i < data.length; i += 16) if (data[i] === 0) transparent++;
+                  if (transparent / (data.length / 16) > 0.45) {
+                    cleared = true;
+                    canvas.style.opacity = "0";
+                    canvas.style.pointerEvents = "none";
+                  }
+                }
+              }
+
+              canvas.addEventListener("pointerdown", (e) => {
+                scratching = true;
+                try {
+                  canvas.setPointerCapture(e.pointerId);
+                } catch (_) {}
+                scratchAt(e.clientX, e.clientY);
+              });
+              canvas.addEventListener("pointermove", (e) => {
+                if (scratching) scratchAt(e.clientX, e.clientY);
+              });
+              canvas.addEventListener("pointerup", () => (scratching = false));
+              canvas.addEventListener("pointercancel", () => (scratching = false));
+            });
+
+            root.querySelector("#reveal-all-scratch").addEventListener("click", () => {
+              canvases.forEach((c) => {
+                c.style.opacity = "0";
+                c.style.pointerEvents = "none";
+              });
+            });
+            root.querySelector("#next-room-btn").addEventListener("click", () => showMuseumRoom(2));
+          }
+
+          function renderRoom2Puzzle(root) {
+            const photos = giftData.photos || [];
+            const puzzlePhoto = photos[giftData.puzzleIndex || 0] || photos[0];
+            if (!puzzlePhoto) {
+              root.innerHTML = `<div style="text-align:center; padding: 3rem;"><p style="color: var(--ink-muted); margin-bottom:1.5rem;">No puzzle photo selected.</p><button type="button" id="next-room-3-btn" class="btn btn-primary">Enter Room 3 →</button></div>`;
+              root.querySelector("#next-room-3-btn").addEventListener("click", () => showMuseumRoom(3));
+              return;
+            }
+
+            let order = [0, 1, 2, 3, 4, 5, 6, 7, 8];
+            for (let i = order.length - 1; i > 0; i--) {
+              const j = Math.floor(Math.random() * (i + 1));
+              [order[i], order[j]] = [order[j], order[i]];
+            }
+            if (order.every((v, i) => v === i)) [order[0], order[1]] = [order[1], order[0]];
+
+            let selectedPos = null;
+            let solved = false;
+            let moves = 0;
+
+            root.innerHTML = `
+              <div style="text-align: center;">
+                <div style="font-size: 0.8rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); font-weight: 700;">Room 02 · Restoration Desk</div>
+                <h2 class="font-serif-display" style="font-size: clamp(1.8rem, 4vw, 2.5rem); margin: 0.25rem 0;">Restore the photograph</h2>
+                <p style="color: var(--ink-muted); font-size: 0.92rem;">Tap two tiles to swap them. <span id="puzzle-moves" class="tabular-nums" style="font-weight: 700; color: var(--ink);">Moves: 0</span></p>
+                <div id="puzzle-board" class="puzzle-board"></div>
+                <div id="puzzle-status" style="min-height: 1.5rem; font-weight: 700; color: var(--accent);"></div>
+                <div style="display: flex; flex-wrap: wrap; gap: 0.75rem; justify-content: center; margin-top: 1.25rem;">
+                  <button type="button" id="auto-restore-btn" class="btn btn-secondary btn-sm">Auto-Restore</button>
+                  <button type="button" id="next-room-3-btn" class="btn btn-primary">Enter Room 3 →</button>
+                </div>
+              </div>
+            `;
+
+            const board = root.querySelector("#puzzle-board");
+            const movesEl = root.querySelector("#puzzle-moves");
+            const statusEl = root.querySelector("#puzzle-status");
+
+            function renderTiles() {
+              board.innerHTML = order
+                .map((pieceIdx, posIdx) => {
+                  const bgX = (pieceIdx % 3) * 50;
+                  const bgY = Math.floor(pieceIdx / 3) * 50;
+                  return `<button type="button" class="puzzle-tile ${selectedPos === posIdx ? "selected" : ""}" data-pos="${posIdx}" style="background-image: url('${puzzlePhoto.url}'); background-position: ${bgX}% ${bgY}%;"></button>`;
+                })
+                .join("");
+
+              board.querySelectorAll(".puzzle-tile").forEach((tile) => {
+                tile.addEventListener("click", () => {
+                  if (solved) return;
+                  const pos = Number(tile.dataset.pos);
+                  if (selectedPos === null) selectedPos = pos;
+                  else if (selectedPos === pos) selectedPos = null;
+                  else {
+                    [order[selectedPos], order[pos]] = [order[pos], order[selectedPos]];
+                    selectedPos = null;
+                    moves++;
+                    movesEl.textContent = `Moves: ${moves}`;
+                  }
+                  renderTiles();
+                  checkSolved();
+                });
+              });
+            }
+
+            function checkSolved() {
+              if (!solved && order.every((v, i) => v === i)) {
+                solved = true;
+                statusEl.textContent = `Restored! ${puzzlePhoto.caption || ""}`;
+                SoundEngine.playChime();
+                triggerConfettiBurst(120);
+
+                const oldOverlay = document.getElementById("puzzle-fullscreen-reveal");
+                if (oldOverlay) oldOverlay.remove();
+
+                const overlay = document.createElement("div");
+                overlay.id = "puzzle-fullscreen-reveal";
+                overlay.className = "puzzle-fullscreen-overlay";
+                overlay.innerHTML = `
+                  <img src="${escapeHtml(puzzlePhoto.url)}" alt="${escapeHtml(puzzlePhoto.caption || "Restored memory")}" class="puzzle-fullscreen-img" />
+                  ${puzzlePhoto.caption ? `<div class="font-prose" style="color: #fff6ea; font-size: 1.2rem; max-width: 50ch;">${escapeHtml(puzzlePhoto.caption)}</div>` : ""}
+                  <div style="display: flex; flex-wrap: wrap; gap: 0.75rem; justify-content: center;">
+                    <button type="button" id="puzzle-fs-close" class="btn btn-secondary">Close</button>
+                    <button type="button" id="puzzle-fs-next" class="btn btn-primary">Enter Room 3 →</button>
+                  </div>
+                `;
+                document.body.appendChild(overlay);
+
+                overlay.querySelector("#puzzle-fs-close").addEventListener("click", () => overlay.remove());
+                overlay.querySelector("#puzzle-fs-next").addEventListener("click", () => {
+                  overlay.remove();
+                  showMuseumRoom(3);
+                });
+                overlay.addEventListener("click", (e) => {
+                  if (e.target === overlay) overlay.remove();
+                });
+              }
+            }
+
+            root.querySelector("#auto-restore-btn").addEventListener("click", () => {
+              order = [0, 1, 2, 3, 4, 5, 6, 7, 8];
+              selectedPos = null;
+              renderTiles();
+              checkSolved();
+            });
+            root.querySelector("#next-room-3-btn").addEventListener("click", () => showMuseumRoom(3));
+            renderTiles();
+          }
+
+          function renderRoom3NoteWall(root) {
+            const notes = giftData.notes || [];
+            root.innerHTML = `
+              <div style="text-align: center; margin-bottom: 2rem;">
+                <div style="font-size: 0.8rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); font-weight: 700;">Room 03 · The Note Wall</div>
+                <h2 class="font-serif-display" style="font-size: clamp(1.8rem, 4vw, 2.5rem); margin: 0.25rem 0;">Tap each card to read</h2>
+              </div>
+              <div class="notes-wall-grid">
+                ${
+                  notes.length
+                    ? notes
+                        .map(
+                          (txt, idx) => `
+                        <div class="flip-card" tabindex="0" role="button">
+                          <div class="flip-card-inner">
+                            <div class="flip-face flip-front">
+                              <img src="./img/letter.png" alt="Note" class="icon-img-lg" style="margin-bottom: 0.5rem;" />
+                              <div class="font-serif-display" style="font-size: 1.45rem; font-weight: 600;">Note 0${idx + 1}</div>
+                              <div style="font-size: 0.8rem; color: var(--ink-muted); margin-top: 0.3rem;">Tap to flip</div>
+                            </div>
+                            <div class="flip-face flip-back"><p>${escapeHtml(txt)}</p></div>
+                          </div>
+                        </div>
+                      `
+                        )
+                        .join("")
+                    : `<p style="text-align:center; color:var(--ink-muted); grid-column:1/-1;">No notes added.</p>`
+                }
+              </div>
+              <div style="text-align: center; margin-top: 2.5rem;">
+                <button type="button" id="next-room-4-btn" class="btn btn-primary">Enter Room 4 →</button>
+              </div>
+            `;
+
+            root.querySelectorAll(".flip-card").forEach((card) => {
+              card.addEventListener("click", () => card.classList.toggle("flipped"));
+            });
+            root.querySelector("#next-room-4-btn").addEventListener("click", () => showMuseumRoom(4));
+          }
+
+          // ROOM 4: 3D Envelope + Wax Seal Break + Smooth Letter Slide-Out & Unfold + Voice Note
+          function renderRoom4ReadingRoom(root) {
+            let envelopeOpened = false;
+            const sealSrc = resolveSealSrc(giftData.waxSeal);
+            const stickerSrc = resolveStickerSrc(giftData.sticker);
+            const letterContent = giftData.loveLetter && giftData.loveLetter.trim()
+              ? giftData.loveLetter
+              : "With all my love.";
+
+            root.innerHTML = `
+              <div style="text-align: center; margin-bottom: 1rem;">
+                <div style="font-size: 0.8rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); font-weight: 700;">Room 04 · The Reading Room</div>
+                <h2 class="font-serif-display" style="font-size: clamp(1.8rem, 4vw, 2.5rem); margin: 0.25rem 0;">A Letter & A Voice</h2>
+              </div>
+
+              <div class="reading-room-wrap">
+                <!-- Interactive 3D Envelope -->
+                <div id="envelope-stage" class="envelope-stage" role="button" tabindex="0" aria-label="Open sealed letter">
+                  <div class="env-back"></div>
+                  <div class="env-inner-sheet">
+                    <div class="font-prose" style="font-size: 0.92rem; color: #5b3041; line-height: 1.65;">
+                      ${escapeHtml(letterContent.slice(0, 140))}${letterContent.length > 140 ? "..." : ""}
+                    </div>
+                  </div>
+                  <div class="env-front-pocket"></div>
+                  <div class="env-top-flap"></div>
+                  <button type="button" id="break-seal-btn" class="env-wax-seal" aria-label="Break wax seal">
+                    <img src="${sealSrc}" alt="Wax Seal" />
+                  </button>
+                  <div class="env-tap-hint">Tap the wax seal to open for ${escapeHtml(giftData.herName)}</div>
+                </div>
+
+                <!-- Full Unfolded Letter Sheet -->
+                <article id="opened-letter" class="letter-paper hidden">
+                  <img src="${stickerSrc}" alt="Letter Sticker" class="letter-sticker-img" />
+                  <div class="letter-body">${escapeHtml(letterContent)}</div>
+                </article>
+
+                <div class="voice-player-card">
+                  <button type="button" id="voice-play-btn" class="btn btn-primary btn-sm" ${giftData.voiceUrl ? "" : "disabled"}>
+                    <img src="./img/mic.png" alt="" class="icon-img" />
+                    <span id="voice-btn-label">${giftData.voiceUrl ? "Play Voice Note" : "No Voice Recorded"}</span>
+                  </button>
+                  <div id="voice-waves" class="waveform-bars">
+                    ${Array.from({ length: 24 })
+                      .map((_, i) => `<span class="wave-bar" style="animation-delay: ${(i * 0.06).toFixed(2)}s;"></span>`)
+                      .join("")}
+                  </div>
+                  <span id="voice-time" class="tabular-nums" style="font-size: 0.82rem; color: var(--ink-muted);">
+                    ${giftData.voiceUrl ? `${giftData.voiceDuration || 0}s` : "0s"}
+                  </span>
+                  ${giftData.voiceUrl ? `<audio id="gift-voice-audio" src="${escapeHtml(giftData.voiceUrl)}"></audio>` : ""}
+                </div>
+
+                <div style="text-align: center; margin-top: 0.75rem;">
+                  <button type="button" id="next-room-5-btn" class="btn btn-primary">Enter Room 5 →</button>
+                </div>
+              </div>
+            `;
+
+            const envStage = root.querySelector("#envelope-stage");
+            const sealBtn = root.querySelector("#break-seal-btn");
+            const letterEl = root.querySelector("#opened-letter");
+
+            function openEnvelope() {
+              if (envelopeOpened) return;
+              envelopeOpened = true;
+              SoundEngine.playChime();
+              const rect = envStage.getBoundingClientRect();
+              triggerImageBurst(rect.left + rect.width / 2, rect.top + rect.height / 2, 36);
+              envStage.classList.add("opened");
+
+              // Wait for 3D flap & letter slide-out animation, then smoothly reveal full letter paper
+              setTimeout(() => {
+                envStage.classList.add("hidden");
+                letterEl.classList.remove("hidden");
+              }, 950);
+            }
+
+            envStage.addEventListener("click", openEnvelope);
+            sealBtn.addEventListener("click", (e) => {
+              e.stopPropagation();
+              openEnvelope();
+            });
+            envStage.addEventListener("keydown", (e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                openEnvelope();
+              }
+            });
+
+            const audioEl = root.querySelector("#gift-voice-audio");
+            const playBtn = root.querySelector("#voice-play-btn");
+            const btnLabel = root.querySelector("#voice-btn-label");
+            const wavesEl = root.querySelector("#voice-waves");
+            const timeEl = root.querySelector("#voice-time");
+
+            if (audioEl && playBtn) {
+              playBtn.addEventListener("click", () => {
+                if (audioEl.paused) {
+                  if (SoundEngine.isPlaying) SoundEngine.stopMusic();
+                  audioEl.play();
+                  btnLabel.textContent = "Pause";
+                  wavesEl.classList.add("playing");
+                } else {
+                  audioEl.pause();
+                  btnLabel.textContent = "Play Voice Note";
+                  wavesEl.classList.remove("playing");
+                }
+              });
+              audioEl.addEventListener("timeupdate", () => {
+                const cur = Math.floor(audioEl.currentTime);
+                const dur = isFinite(audioEl.duration) ? Math.floor(audioEl.duration) : giftData.voiceDuration || 0;
+                timeEl.textContent = `${cur}s / ${dur}s`;
+              });
+              audioEl.addEventListener("ended", () => {
+                btnLabel.textContent = "Play Voice Note";
+                wavesEl.classList.remove("playing");
+              });
+            }
+
+            root.querySelector("#next-room-5-btn").addEventListener("click", () => {
+              if (audioEl && !audioEl.paused) audioEl.pause();
+              showMuseumRoom(5);
+            });
+          }
+
+          function renderRoom5Promises(root) {
+            const promises = giftData.promises || [];
+            const checked = new Array(promises.length).fill(false);
+
+            root.innerHTML = `
+              <div style="text-align: center; margin-bottom: 1.75rem;">
+                <div style="font-size: 0.8rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); font-weight: 700;">Room 05 · The Promises</div>
+                <h2 class="font-serif-display" style="font-size: clamp(1.8rem, 4vw, 2.5rem); margin: 0.25rem 0;">Tap each promise to seal them</h2>
+              </div>
+
+              <div class="promises-parchment">
+                <div id="promises-list">
+                  ${
+                    promises.length
+                      ? promises
+                          .map(
+                            (pr, idx) => `
+                          <div class="promise-item" data-p-idx="${idx}" tabindex="0" role="checkbox" aria-checked="false">
+                            <span class="promise-check"><img src="./img/love.png" alt="" class="icon-img" /></span>
+                            <span class="font-prose" style="font-size: 1.05rem; line-height: 1.65;">${escapeHtml(pr)}</span>
+                          </div>
+                        `
+                          )
+                          .join("")
+                      : `<p style="color:var(--ink-muted);">No promises listed.</p>`
+                  }
+                </div>
+
+                <div style="margin-top: 1.35rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem;">
+                  <button type="button" id="seal-all-btn" class="btn btn-secondary btn-sm">Check All</button>
+                  <button type="button" id="to-finale-btn" class="btn btn-primary">Grand Finale →</button>
+                </div>
+
+                <div id="sealed-stamp" class="sealed-stamp">SEALED</div>
+              </div>
+            `;
+
+            const stamp = root.querySelector("#sealed-stamp");
+            let isStamped = false;
+            function checkAllDone() {
+              if (!isStamped && promises.length > 0 && checked.every(Boolean)) {
+                isStamped = true;
+                stamp.classList.add("stamped");
+                SoundEngine.playChime();
+                triggerConfettiBurst(100);
+              }
+            }
+
+            root.querySelectorAll(".promise-item").forEach((item) => {
+              const idx = Number(item.dataset.pIdx);
+              item.addEventListener("click", () => {
+                checked[idx] = !checked[idx];
+                item.classList.toggle("checked", checked[idx]);
+                item.querySelector(".promise-check").innerHTML = checked[idx]
+                  ? "✓"
+                  : `<img src="./img/love.png" alt="" class="icon-img" />`;
+                checkAllDone();
+              });
+            });
+
+            root.querySelector("#seal-all-btn").addEventListener("click", () => {
+              root.querySelectorAll(".promise-item").forEach((item, idx) => {
+                checked[idx] = true;
+                item.classList.add("checked");
+                item.querySelector(".promise-check").textContent = "✓";
+              });
+              checkAllDone();
+            });
+
+            root.querySelector("#to-finale-btn").addEventListener("click", showGrandFinale);
+          }
+
+          // STAGE 7: Grand Finale (Exact Day + Month + Year Counter)
+          function showGrandFinale() {
+            currentViewFn = showGrandFinale;
+            startLargeFlowerRain();
+            const day = giftData.startDay ?? 1;
+            const monthIdx = giftData.startMonth ?? 9;
+            const year = giftData.startYear ?? 2026;
+            const totalDays = calculateDaysTogether(day, monthIdx, year);
+            const monthName = (currentLang === "bn" ? MONTHS_BN : MONTHS_EN)[monthIdx] || "October";
+
+            stageRoot.innerHTML = `
+              <section class="stage-screen">
+                <div class="finale-card">
+                  <img src="./img/love.png" alt="Love" class="icon-img-lg" style="margin-bottom: 0.75rem;" />
+                  <div style="font-size: 0.85rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent); font-weight: 700;">
+                    Since ${escapeHtml(day)} ${escapeHtml(monthName)} ${escapeHtml(year)}
+                  </div>
+                  <div id="finale-days-num" class="finale-counter tabular-nums">0</div>
+                  <div style="font-size: 1.05rem; letter-spacing: 0.14em; font-weight: 700; margin-bottom: 1.5rem;">
+                    DAYS OF US, SO FAR
+                  </div>
+
+                  <h1 class="font-serif-display" style="font-size: clamp(2rem, 5vw, 3.1rem); margin-bottom: 0.85rem;">
+                    ${escapeHtml(giftData.yourName)} & ${escapeHtml(giftData.herName)}
+                  </h1>
+
+                  <p class="font-prose" style="font-size: 1.15rem; color: var(--ink-muted); max-width: 50ch; margin: 0 auto 2rem; line-height: 1.8;">
+                    “Whatever our souls are made of, yours and mine are the same.”
+                  </p>
+
+                  <div style="font-size: 0.92rem; color: var(--ink-muted); margin-bottom: 2rem;">
+                    made by hand, for one person
+                  </div>
+
+                  <div style="display: flex; flex-wrap: wrap; gap: 0.75rem; justify-content: center;">
+                    <button type="button" id="revisit-museum-btn" class="btn btn-secondary">Revisit Rooms</button>
+                    <button type="button" id="replay-all-btn" class="btn btn-primary">Replay From Start</button>
+                  </div>
+                </div>
+              </section>
+            `;
+
+            const numEl = stageRoot.querySelector("#finale-days-num");
+            let current = 0;
+            const stepVal = Math.max(1, Math.ceil(totalDays / 40));
+            const countTimer = setInterval(() => {
+              current = Math.min(totalDays, current + stepVal);
+              numEl.textContent = current;
+              if (current >= totalDays) clearInterval(countTimer);
+            }, 28);
+
+            stageRoot.querySelector("#revisit-museum-btn").addEventListener("click", () => {
+              stopLargeFlowerRain();
+              showMuseumRoom(1);
+            });
+            stageRoot.querySelector("#replay-all-btn").addEventListener("click", () => {
+              stopLargeFlowerRain();
+              showLockScreen();
+            });
+          }
+
+          showLockScreen();
+        }
+      })();
+    </script>
+  </body>
+</html>
