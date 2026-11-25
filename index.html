@@ -4056,6 +4056,7 @@
           document.getElementById("receiver-brand-label").textContent = `${giftData.herName}'s Museum`;
 
           let curtainParted = false;
+          let room1Unlocked = giftData.photos.length === 0;
           let currentViewFn = showLockScreen;
           rLangBtn.addEventListener("click", () => {
             currentLang = currentLang === "en" ? "bn" : "en";
@@ -4666,6 +4667,7 @@
 
           // STAGE 6B: 5 Museum Rooms
           function showMuseumRoom(roomNum) {
+            if (roomNum > 1 && !room1Unlocked) roomNum = 1;
             currentViewFn = () => showMuseumRoom(roomNum);
             const roomTitles = ["1 · Gallery", "2 · Puzzle", "3 · Note Wall", "4 · Reading Room", "5 · Promises"];
 
@@ -4674,7 +4676,10 @@
                 <nav class="museum-nav">
                   <div class="room-tabs">
                     ${roomTitles
-                      .map((title, idx) => `<button type="button" class="room-tab ${roomNum === idx + 1 ? "active" : ""}" data-room="${idx + 1}">${title}</button>`)
+                      .map(
+                        (title, idx) =>
+                          `<button type="button" class="room-tab ${roomNum === idx + 1 ? "active" : ""} ${idx > 0 && !room1Unlocked ? "hidden" : ""}" data-room="${idx + 1}">${title}</button>`
+                      )
                       .join("")}
                   </div>
                   <div style="font-size: 0.84rem; color: var(--ink-muted); font-weight: 600;">Room ${roomNum} of 5</div>
@@ -4684,7 +4689,11 @@
             `;
 
             stageRoot.querySelectorAll(".room-tab").forEach((tab) => {
-              tab.addEventListener("click", () => showMuseumRoom(Number(tab.dataset.room)));
+              tab.addEventListener("click", () => {
+                const targetRoom = Number(tab.dataset.room);
+                if (targetRoom > 1 && !room1Unlocked) return;
+                showMuseumRoom(targetRoom);
+              });
             });
 
             const rc = stageRoot.querySelector("#room-content");
@@ -4705,6 +4714,7 @@
 
             let activeIdx = 0;
             const revealedSet = new Set();
+            const viewedSet = new Set();
 
             root.innerHTML = `
               <div style="text-align: center; margin-bottom: 1.25rem;">
@@ -4753,7 +4763,7 @@
                 </div>
               </div>
 
-              <div style="text-align: center; margin-top: 1.75rem;">
+              <div id="next-room-wrap" class="hidden" style="text-align: center; margin-top: 1.75rem;">
                 <button type="button" id="next-room-btn" class="btn btn-primary">Enter Room 2 →</button>
               </div>
             `;
@@ -4763,16 +4773,32 @@
             const counterEl = root.querySelector("#gallery-counter");
             const prevBtn = root.querySelector("#slider-prev-btn");
             const nextBtn = root.querySelector("#slider-next-btn");
+            const nextRoomWrap = root.querySelector("#next-room-wrap");
             const dots = root.querySelectorAll(".slider-dot");
             const canvases = root.querySelectorAll(".scratch-overlay");
 
-            function goToSlide(idx) {
+            function syncRoom2Visibility(idx, markViewed = false) {
+              if (markViewed) viewedSet.add(idx);
+              const allViewed = viewedSet.size >= photos.length;
+              const isLastPhoto = idx === photos.length - 1;
+              const showRoom2 = allViewed && isLastPhoto;
+              if (showRoom2 && !room1Unlocked) {
+                room1Unlocked = true;
+                stageRoot.querySelectorAll(".room-tab").forEach((tab) => tab.classList.remove("hidden"));
+              }
+              nextRoomWrap.classList.toggle("hidden", !showRoom2);
+              const fsNextRoomBtn = document.getElementById("fs-next-room-btn");
+              if (fsNextRoomBtn) fsNextRoomBtn.classList.toggle("hidden", !showRoom2);
+            }
+
+            function goToSlide(idx, markViewed = true) {
               activeIdx = Math.max(0, Math.min(photos.length - 1, idx));
               track.style.transform = `translateX(-${activeIdx * 100}%)`;
               counterEl.textContent = `${activeIdx + 1} / ${photos.length}`;
               prevBtn.disabled = activeIdx === 0;
               nextBtn.disabled = activeIdx === photos.length - 1;
               dots.forEach((d, i) => d.classList.toggle("active", i === activeIdx));
+              syncRoom2Visibility(activeIdx, markViewed);
             }
 
             prevBtn.addEventListener("click", () => goToSlide(activeIdx - 1));
@@ -4847,7 +4873,7 @@
                     <img src="./img/love.png" alt="Love" />
                     <span>Shower Love</span>
                   </button>
-                  <button type="button" id="fs-next-room-btn" class="btn btn-primary btn-sm">Enter Room 2 →</button>
+                  <button type="button" id="fs-next-room-btn" class="btn btn-primary btn-sm hidden">Enter Room 2 →</button>
                 </div>
               `;
               document.body.appendChild(overlay);
@@ -4865,7 +4891,7 @@
                 fsCounter.textContent = `${fsIdx + 1} / ${photos.length}`;
                 fsPrev.disabled = fsIdx === 0;
                 fsNext.disabled = fsIdx === photos.length - 1;
-                goToSlide(fsIdx);
+                goToSlide(fsIdx, true);
               }
               updateFsSlide(fsIdx);
 
@@ -4990,7 +5016,7 @@
               openFullScreenSlider(activeIdx);
             });
             root.querySelector("#next-room-btn").addEventListener("click", () => showMuseumRoom(2));
-            goToSlide(0);
+            goToSlide(0, photos.length > 1);
           }
 
           function renderRoom2Puzzle(root) {
