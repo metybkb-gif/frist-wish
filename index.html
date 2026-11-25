@@ -260,7 +260,7 @@
         width: 100%;
         height: 100%;
         pointer-events: none;
-        z-index: 45;
+        z-index: 105;
       }
 
       /* =========================================================
@@ -1423,34 +1423,275 @@
         border-color: var(--accent);
       }
 
-      .scratch-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
-        gap: 1.35rem;
+      .gallery-slider-shell {
+        position: relative;
+        width: 100%;
+        max-width: 980px;
+        margin: 0 auto;
       }
 
-      .scratch-frame {
+      .gallery-slider-viewport {
+        position: relative;
+        width: 100%;
+        overflow: hidden;
+        border-radius: 1.15rem;
         background-color: var(--surface-elevated);
         border: 1px solid var(--border);
-        border-radius: 0.85rem;
-        padding: 0.75rem;
         box-shadow: var(--shadow);
+        touch-action: pan-y;
+      }
+
+      .gallery-slider-track {
+        display: flex;
+        width: 100%;
+        transition: transform 0.52s cubic-bezier(0.22, 1, 0.36, 1);
+        will-change: transform;
+      }
+
+      .gallery-slide {
+        flex: 0 0 100%;
+        width: 100%;
+        padding: 1rem 1rem 1.25rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
       }
 
       .scratch-canvas-box {
         position: relative;
         width: 100%;
-        aspect-ratio: 4 / 3;
-        border-radius: 0.5rem;
+        height: min(64vh, 540px);
+        border-radius: 0.85rem;
         overflow: hidden;
-        background-color: var(--surface);
+        background-color: #14080e;
+        display: flex;
+        align-items: center;
+        justify-content: center;
       }
 
       .scratch-canvas-box img {
         width: 100%;
         height: 100%;
-        object-fit: cover;
+        object-fit: contain;
         display: block;
+        cursor: zoom-in;
+      }
+
+      .scratch-overlay {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        touch-action: none;
+        cursor: crosshair;
+        transition: opacity 0.45s ease;
+      }
+
+      .gallery-slide-bar {
+        width: 100%;
+        margin-top: 0.9rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+      }
+
+      .scratch-caption {
+        font-size: 1rem;
+        font-family: "Noto Serif Bengali", "Cormorant Garamond", serif;
+        color: var(--ink);
+        font-weight: 600;
+        flex: 1;
+        min-width: 140px;
+      }
+
+      .gallery-slide-actions {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        flex-shrink: 0;
+      }
+
+      .gallery-love-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.45rem;
+        min-height: 44px;
+        padding: 0.5rem 1.05rem;
+        border-radius: 999px;
+        border: 1.5px solid var(--accent);
+        background: linear-gradient(135deg, rgba(255, 240, 246, 0.96), rgba(252, 231, 243, 0.96));
+        color: #9d174d;
+        font-weight: 700;
+        font-size: 0.9rem;
+        font-family: inherit;
+        cursor: pointer;
+        box-shadow: 0 8px 20px -6px rgba(190, 24, 93, 0.35);
+        transition: transform 0.16s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.18s ease;
+      }
+
+      .gallery-love-btn:hover {
+        transform: translateY(-1px) scale(1.03);
+      }
+
+      .gallery-love-btn:active,
+      .gallery-love-btn.pop {
+        transform: scale(0.92);
+      }
+
+      .gallery-love-btn img {
+        width: 24px;
+        height: 24px;
+        object-fit: contain;
+        display: block;
+      }
+
+      .slider-nav-btn {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-55%);
+        z-index: 8;
+        width: 46px;
+        height: 46px;
+        border-radius: 50%;
+        border: 1px solid rgba(255, 255, 255, 0.35);
+        background: rgba(24, 9, 16, 0.72);
+        color: #ffffff;
+        font-size: 1.5rem;
+        line-height: 1;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        backdrop-filter: blur(6px);
+        transition: background-color 0.18s ease, transform 0.18s ease, opacity 0.18s ease;
+      }
+
+      .slider-nav-btn:hover:not(:disabled) {
+        background: var(--accent);
+      }
+
+      .slider-nav-btn:disabled {
+        opacity: 0.28;
+        cursor: default;
+      }
+
+      .slider-nav-prev {
+        left: 0.75rem;
+      }
+
+      .slider-nav-next {
+        right: 0.75rem;
+      }
+
+      .slider-dots-row {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 0.45rem;
+        margin-top: 1rem;
+        flex-wrap: wrap;
+      }
+
+      .slider-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        border: none;
+        background: var(--border);
+        cursor: pointer;
+        transition: transform 0.2s ease, background-color 0.2s ease;
+      }
+
+      .slider-dot.active {
+        background: var(--accent);
+        transform: scale(1.3);
+      }
+
+      /* Full-Screen Edge-to-Edge Gallery Slider Overlay */
+      .gallery-fullscreen-overlay {
+        position: fixed;
+        inset: 0;
+        z-index: 95;
+        background: rgba(12, 5, 9, 0.97);
+        backdrop-filter: blur(12px);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        padding: 1rem 1rem 1.35rem;
+        animation: fadeSlideUp 0.32s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+
+      .gallery-fs-topbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.75rem;
+        color: #fff4f7;
+        z-index: 4;
+      }
+
+      .gallery-fs-stage {
+        position: relative;
+        flex: 1;
+        width: 100%;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        margin: 0.5rem 0;
+        touch-action: pan-y;
+      }
+
+      .gallery-fs-track {
+        display: flex;
+        width: 100%;
+        height: 100%;
+        align-items: center;
+        transition: transform 0.52s cubic-bezier(0.22, 1, 0.36, 1);
+      }
+
+      .gallery-fs-slide {
+        flex: 0 0 100%;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 0 3.25rem;
+        gap: 0.75rem;
+      }
+
+      .gallery-fs-slide img {
+        max-width: 96vw;
+        max-height: 74vh;
+        width: auto;
+        height: auto;
+        object-fit: contain;
+        border-radius: 0.85rem;
+        box-shadow: 0 24px 68px rgba(0, 0, 0, 0.72);
+      }
+
+      .gallery-fs-bottom {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 1rem;
+        flex-wrap: wrap;
+        z-index: 4;
+      }
+
+      @media (max-width: 640px) {
+        .gallery-fs-slide {
+          padding: 0 0.35rem;
+        }
+        .slider-nav-btn {
+          width: 38px;
+          height: 38px;
+          font-size: 1.25rem;
+        }
       }
 
       .scratch-overlay {
@@ -2661,6 +2902,30 @@
               rot: (Math.random() - 0.5) * 0.6,
               vRot: (Math.random() - 0.5) * 0.08,
               life: 105
+            });
+          }
+          if (!fxAnimId) runFxLoop();
+        }
+
+        // Dense Heart Shower directly over full-screen photos when Love button is clicked
+        const HEART_RAIN_FILES = ["./img/love.png", "./img/heart_pink.png", "./img/heart_gold.png"];
+        HEART_RAIN_FILES.forEach((s) => preloadImg(s));
+        function triggerHeartShower(count = 72) {
+          for (let i = 0; i < count; i++) {
+            const src = HEART_RAIN_FILES[i % HEART_RAIN_FILES.length];
+            const img = imageCache[src] || preloadImg(src);
+            fxParticles.push({
+              type: "flower",
+              img,
+              x: Math.random() * fxCanvas.width,
+              y: -30 - Math.random() * (fxCanvas.height * 0.45),
+              vx: (Math.random() - 0.5) * 1.8,
+              vy: 2.3 + Math.random() * 3.1,
+              swayPhase: Math.random() * Math.PI * 2,
+              size: 28 + Math.random() * 38,
+              rot: (Math.random() - 0.5) * 0.55,
+              vRot: (Math.random() - 0.5) * 0.04,
+              life: 280
             });
           }
           if (!fxAnimId) runFxLoop();
@@ -4438,34 +4703,224 @@
               return;
             }
 
+            let activeIdx = 0;
+            const revealedSet = new Set();
+
             root.innerHTML = `
-              <div style="text-align: center; margin-bottom: 2rem;">
+              <div style="text-align: center; margin-bottom: 1.25rem;">
                 <div style="font-size: 0.8rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); font-weight: 700;">Room 01 · The Gallery</div>
-                <h2 class="font-serif-display" style="font-size: clamp(1.8rem, 4vw, 2.5rem); margin: 0.25rem 0;">Scratch the gold foil to reveal</h2>
-                <button type="button" id="reveal-all-scratch" class="btn btn-secondary btn-sm" style="margin-top:0.5rem;">Reveal All</button>
+                <h2 class="font-serif-display" style="font-size: clamp(1.65rem, 3.8vw, 2.35rem); margin: 0.2rem 0;">Scratch & Slide Photos (<span id="gallery-counter" class="tabular-nums">1 / ${photos.length}</span>)</h2>
+                <div style="display:flex; justify-content:center; gap:0.65rem; flex-wrap:wrap; margin-top:0.55rem;">
+                  <button type="button" id="reveal-all-scratch" class="btn btn-secondary btn-sm">Reveal All</button>
+                  <button type="button" id="open-fs-gallery-btn" class="btn btn-primary btn-sm">Full Screen View</button>
+                </div>
               </div>
-              <div class="scratch-grid">
-                ${photos
-                  .map(
-                    (ph, idx) => `
-                    <figure class="scratch-frame">
-                      <div class="scratch-canvas-box">
-                        <img src="${escapeHtml(ph.url)}" alt="${escapeHtml(ph.caption)}" />
-                        <canvas class="scratch-overlay" width="320" height="240"></canvas>
-                      </div>
-                      <figcaption class="scratch-caption">Fig. ${idx + 1} ${ph.caption ? "— " + escapeHtml(ph.caption) : ""}</figcaption>
-                    </figure>
-                  `
-                  )
-                  .join("")}
+
+              <div class="gallery-slider-shell">
+                <div id="gallery-viewport" class="gallery-slider-viewport">
+                  <div id="gallery-track" class="gallery-slider-track">
+                    ${photos
+                      .map(
+                        (ph, idx) => `
+                        <figure class="gallery-slide" data-slide-idx="${idx}">
+                          <div class="scratch-canvas-box">
+                            <img src="${escapeHtml(ph.url)}" alt="${escapeHtml(ph.caption || `Memory ${idx + 1}`)}" class="gallery-slide-img" data-idx="${idx}" />
+                            <canvas class="scratch-overlay" width="640" height="480" data-idx="${idx}"></canvas>
+                          </div>
+                          <div class="gallery-slide-bar">
+                            <figcaption class="scratch-caption">Fig. ${idx + 1}${ph.caption ? " — " + escapeHtml(ph.caption) : ""}</figcaption>
+                            <div class="gallery-slide-actions">
+                              <button type="button" class="btn btn-secondary btn-sm slide-fs-btn" data-idx="${idx}">Full Screen</button>
+                              <button type="button" class="gallery-love-btn slide-love-btn" data-idx="${idx}" aria-label="Shower hearts">
+                                <img src="./img/love.png" alt="Love" />
+                                <span>Love</span>
+                              </button>
+                            </div>
+                          </div>
+                        </figure>
+                      `
+                      )
+                      .join("")}
+                  </div>
+                  <button type="button" id="slider-prev-btn" class="slider-nav-btn slider-nav-prev" aria-label="Previous photo">‹</button>
+                  <button type="button" id="slider-next-btn" class="slider-nav-btn slider-nav-next" aria-label="Next photo">›</button>
+                </div>
+
+                <div id="slider-dots" class="slider-dots-row">
+                  ${photos
+                    .map((_, idx) => `<button type="button" class="slider-dot ${idx === 0 ? "active" : ""}" data-dot="${idx}" aria-label="Photo ${idx + 1}"></button>`)
+                    .join("")}
+                </div>
               </div>
-              <div style="text-align: center; margin-top: 2.5rem;">
+
+              <div style="text-align: center; margin-top: 1.75rem;">
                 <button type="button" id="next-room-btn" class="btn btn-primary">Enter Room 2 →</button>
               </div>
             `;
 
+            const track = root.querySelector("#gallery-track");
+            const viewport = root.querySelector("#gallery-viewport");
+            const counterEl = root.querySelector("#gallery-counter");
+            const prevBtn = root.querySelector("#slider-prev-btn");
+            const nextBtn = root.querySelector("#slider-next-btn");
+            const dots = root.querySelectorAll(".slider-dot");
             const canvases = root.querySelectorAll(".scratch-overlay");
+
+            function goToSlide(idx) {
+              activeIdx = Math.max(0, Math.min(photos.length - 1, idx));
+              track.style.transform = `translateX(-${activeIdx * 100}%)`;
+              counterEl.textContent = `${activeIdx + 1} / ${photos.length}`;
+              prevBtn.disabled = activeIdx === 0;
+              nextBtn.disabled = activeIdx === photos.length - 1;
+              dots.forEach((d, i) => d.classList.toggle("active", i === activeIdx));
+            }
+
+            prevBtn.addEventListener("click", () => goToSlide(activeIdx - 1));
+            nextBtn.addEventListener("click", () => goToSlide(activeIdx + 1));
+            dots.forEach((d) => d.addEventListener("click", () => goToSlide(Number(d.dataset.dot))));
+
+            // Right-to-left touch swipe support on slider
+            let swipeStartX = 0;
+            let swipeTracking = false;
+            viewport.addEventListener("pointerdown", (e) => {
+              if (e.target.classList.contains("scratch-overlay") || e.target.closest("button")) return;
+              swipeTracking = true;
+              swipeStartX = e.clientX;
+            });
+            viewport.addEventListener("pointerup", (e) => {
+              if (!swipeTracking) return;
+              swipeTracking = false;
+              const dx = e.clientX - swipeStartX;
+              if (dx < -45) goToSlide(activeIdx + 1);
+              else if (dx > 45) goToSlide(activeIdx - 1);
+            });
+            viewport.addEventListener("pointercancel", () => (swipeTracking = false));
+
+            function fireLoveRain(btn) {
+              SoundEngine.playChime();
+              triggerHeartShower(78);
+              if (btn) {
+                btn.classList.add("pop");
+                setTimeout(() => btn.classList.remove("pop"), 220);
+              }
+            }
+
+            root.querySelectorAll(".slide-love-btn").forEach((btn) => {
+              btn.addEventListener("click", () => fireLoveRain(btn));
+            });
+
+            function openFullScreenSlider(startIdx = activeIdx) {
+              const oldFs = document.getElementById("gallery-fullscreen-overlay");
+              if (oldFs) oldFs.remove();
+
+              let fsIdx = Math.max(0, Math.min(photos.length - 1, startIdx));
+              const overlay = document.createElement("div");
+              overlay.id = "gallery-fullscreen-overlay";
+              overlay.className = "gallery-fullscreen-overlay";
+              overlay.innerHTML = `
+                <div class="gallery-fs-topbar">
+                  <div style="font-weight: 700; font-size: 0.95rem;" id="fs-counter" class="tabular-nums">${fsIdx + 1} / ${photos.length}</div>
+                  <div style="display:flex; gap:0.6rem; align-items:center;">
+                    <button type="button" id="fs-close-btn" class="btn btn-secondary btn-sm">Close ×</button>
+                  </div>
+                </div>
+
+                <div id="fs-stage" class="gallery-fs-stage">
+                  <div id="fs-track" class="gallery-fs-track">
+                    ${photos
+                      .map(
+                        (ph, idx) => `
+                        <div class="gallery-fs-slide">
+                          <img src="${escapeHtml(ph.url)}" alt="${escapeHtml(ph.caption || `Memory ${idx + 1}`)}" />
+                          ${ph.caption ? `<div class="font-prose" style="color: #fff4f7; font-size: 1.15rem; text-align:center; max-width: 55ch;">${escapeHtml(ph.caption)}</div>` : ""}
+                        </div>
+                      `
+                      )
+                      .join("")}
+                  </div>
+                  <button type="button" id="fs-prev-btn" class="slider-nav-btn slider-nav-prev" aria-label="Previous photo">‹</button>
+                  <button type="button" id="fs-next-btn" class="slider-nav-btn slider-nav-next" aria-label="Next photo">›</button>
+                </div>
+
+                <div class="gallery-fs-bottom">
+                  <button type="button" id="fs-love-btn" class="gallery-love-btn">
+                    <img src="./img/love.png" alt="Love" />
+                    <span>Shower Love</span>
+                  </button>
+                  <button type="button" id="fs-next-room-btn" class="btn btn-primary btn-sm">Enter Room 2 →</button>
+                </div>
+              `;
+              document.body.appendChild(overlay);
+
+              const fsTrack = overlay.querySelector("#fs-track");
+              const fsStage = overlay.querySelector("#fs-stage");
+              const fsCounter = overlay.querySelector("#fs-counter");
+              const fsPrev = overlay.querySelector("#fs-prev-btn");
+              const fsNext = overlay.querySelector("#fs-next-btn");
+              const fsLoveBtn = overlay.querySelector("#fs-love-btn");
+
+              function updateFsSlide(newIdx) {
+                fsIdx = Math.max(0, Math.min(photos.length - 1, newIdx));
+                fsTrack.style.transform = `translateX(-${fsIdx * 100}%)`;
+                fsCounter.textContent = `${fsIdx + 1} / ${photos.length}`;
+                fsPrev.disabled = fsIdx === 0;
+                fsNext.disabled = fsIdx === photos.length - 1;
+                goToSlide(fsIdx);
+              }
+              updateFsSlide(fsIdx);
+
+              fsPrev.addEventListener("click", () => updateFsSlide(fsIdx - 1));
+              fsNext.addEventListener("click", () => updateFsSlide(fsIdx + 1));
+              fsLoveBtn.addEventListener("click", () => fireLoveRain(fsLoveBtn));
+
+              let fsSwipeX = 0;
+              let fsSwiping = false;
+              fsStage.addEventListener("pointerdown", (e) => {
+                if (e.target.closest("button")) return;
+                fsSwiping = true;
+                fsSwipeX = e.clientX;
+              });
+              fsStage.addEventListener("pointerup", (e) => {
+                if (!fsSwiping) return;
+                fsSwiping = false;
+                const dx = e.clientX - fsSwipeX;
+                if (dx < -40) updateFsSlide(fsIdx + 1);
+                else if (dx > 40) updateFsSlide(fsIdx - 1);
+              });
+              fsStage.addEventListener("pointercancel", () => (fsSwiping = false));
+
+              const onKey = (e) => {
+                if (!document.getElementById("gallery-fullscreen-overlay")) {
+                  window.removeEventListener("keydown", onKey);
+                  return;
+                }
+                if (e.key === "ArrowRight") updateFsSlide(fsIdx + 1);
+                else if (e.key === "ArrowLeft") updateFsSlide(fsIdx - 1);
+                else if (e.key === "Escape") closeFs();
+              };
+              window.addEventListener("keydown", onKey);
+
+              function closeFs() {
+                window.removeEventListener("keydown", onKey);
+                overlay.remove();
+              }
+              overlay.querySelector("#fs-close-btn").addEventListener("click", closeFs);
+              overlay.querySelector("#fs-next-room-btn").addEventListener("click", () => {
+                closeFs();
+                showMuseumRoom(2);
+              });
+            }
+
+            root.querySelector("#open-fs-gallery-btn").addEventListener("click", () => openFullScreenSlider(activeIdx));
+            root.querySelectorAll(".slide-fs-btn").forEach((b) =>
+              b.addEventListener("click", () => openFullScreenSlider(Number(b.dataset.idx)))
+            );
+            root.querySelectorAll(".gallery-slide-img").forEach((imgEl) =>
+              imgEl.addEventListener("click", () => openFullScreenSlider(Number(imgEl.dataset.idx)))
+            );
+
             canvases.forEach((canvas) => {
+              const idx = Number(canvas.dataset.idx);
               const ctx = canvas.getContext("2d");
               const grad = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
               grad.addColorStop(0, "#d97706");
@@ -4474,8 +4929,8 @@
               ctx.fillStyle = grad;
               ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-              ctx.fillStyle = "rgba(70, 20, 40, 0.72)";
-              ctx.font = "600 18px Georgia, serif";
+              ctx.fillStyle = "rgba(70, 20, 40, 0.78)";
+              ctx.font = "600 30px Georgia, serif";
               ctx.textAlign = "center";
               ctx.textBaseline = "middle";
               ctx.fillText("Scratch Gold Foil", canvas.width / 2, canvas.height / 2);
@@ -4484,6 +4939,15 @@
               let cleared = false;
               let strokes = 0;
 
+              function markCleared() {
+                if (cleared) return;
+                cleared = true;
+                revealedSet.add(idx);
+                canvas.style.opacity = "0";
+                canvas.style.pointerEvents = "none";
+                openFullScreenSlider(idx);
+              }
+
               function scratchAt(cx, cy) {
                 if (cleared) return;
                 const rect = canvas.getBoundingClientRect();
@@ -4491,17 +4955,15 @@
                 const y = ((cy - rect.top) / rect.height) * canvas.height;
                 ctx.globalCompositeOperation = "destination-out";
                 ctx.beginPath();
-                ctx.arc(x, y, 26, 0, Math.PI * 2);
+                ctx.arc(x, y, 48, 0, Math.PI * 2);
                 ctx.fill();
                 strokes++;
-                if (strokes > 26 && strokes % 6 === 0) {
+                if (strokes > 20 && strokes % 5 === 0) {
                   const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
                   let transparent = 0;
-                  for (let i = 3; i < data.length; i += 16) if (data[i] === 0) transparent++;
-                  if (transparent / (data.length / 16) > 0.45) {
-                    cleared = true;
-                    canvas.style.opacity = "0";
-                    canvas.style.pointerEvents = "none";
+                  for (let i = 3; i < data.length; i += 32) if (data[i] === 0) transparent++;
+                  if (transparent / (data.length / 32) > 0.4) {
+                    markCleared();
                   }
                 }
               }
@@ -4525,8 +4987,10 @@
                 c.style.opacity = "0";
                 c.style.pointerEvents = "none";
               });
+              openFullScreenSlider(activeIdx);
             });
             root.querySelector("#next-room-btn").addEventListener("click", () => showMuseumRoom(2));
+            goToSlide(0);
           }
 
           function renderRoom2Puzzle(root) {
